@@ -1,2 +1,2 @@
 # FashionKing-KimCoordi
-main branch
+Personal branch
