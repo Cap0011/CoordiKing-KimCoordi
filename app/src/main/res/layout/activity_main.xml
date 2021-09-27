@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/panton_grey"
+    tools:context=".activity.MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="450dp"
+        android:layout_margin="@dimen/initial_margin_size"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="20C"
+                android:textColor="@color/panton_yellow"
+                android:gravity="start"
+                android:fontFamily="casual"
+                android:textSize="20sp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Manchester, England"
+
+                android:textColor="@color/panton_yellow"
+                android:fontFamily="casual"
+                android:gravity="end"
+                android:textSize="20sp"/>
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/ic_main_sample"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/main_btn_wardrobe"
+            android:layout_margin="@dimen/main_btn_margin_size"
+            android:layout_width="@dimen/main_btn_size"
+            android:layout_height="@dimen/main_btn_size"
+            android:background="@drawable/main_button"
+            android:textColor="@color/panton_grey"
+            android:textSize="@dimen/main_btn_text_size"
+            android:textStyle="bold"
+            android:text="My Wardrobe" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/main_btn_outfit"
+            android:layout_margin="@dimen/main_btn_margin_size"
+            android:layout_width="@dimen/main_btn_size"
+            android:layout_height="@dimen/main_btn_size"
+            android:background="@drawable/main_button"
+            android:textColor="@color/panton_grey"
+            android:textSize="@dimen/main_btn_text_size"
+            android:textStyle="bold"
+            android:text="My Outfit" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/main_btn_camera"
+            android:layout_margin="@dimen/main_btn_margin_size"
+            android:layout_width="@dimen/main_btn_size"
+            android:layout_height="@dimen/main_btn_size"
+            android:background="@drawable/main_button"
+            android:textColor="@color/panton_grey"
+            android:textSize="@dimen/main_btn_text_size"
+            android:textStyle="bold"
+            android:text="Snap" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/main_btn_mypage"
+            android:layout_margin="@dimen/main_btn_margin_size"
+            android:layout_width="@dimen/main_btn_size"
+            android:layout_height="@dimen/main_btn_size"
+            android:background="@drawable/main_button"
+            android:textColor="@color/panton_grey"
+            android:textSize="@dimen/main_btn_text_size"
+            android:textStyle="bold"
+            android:text="My Page" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/main_btn_favourite"
+            android:layout_margin="@dimen/main_btn_margin_size"
+            android:layout_width="@dimen/main_btn_size"
+            android:layout_height="@dimen/main_btn_size"
+            android:background="@drawable/main_button"
+            android:textColor="@color/panton_grey"
+            android:textSize="@dimen/main_btn_text_size"
+            android:textStyle="bold"
+            android:text="Favourite" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/main_btn_simulator"
+            android:layout_margin="@dimen/main_btn_margin_size"
+            android:layout_width="@dimen/main_btn_size"
+            android:layout_height="@dimen/main_btn_size"
+
+            android:background="@drawable/main_button"
+            android:textColor="@color/panton_grey"
+            android:textSize="@dimen/main_btn_text_size"
+            android:textStyle="bold"
+            android:text="Check beforehand" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/main_btn_setting"
+            android:layout_margin="@dimen/main_btn_margin_size"
+            android:layout_width="@dimen/main_btn_size"
+            android:layout_height="@dimen/main_btn_size"
+            android:background="@drawable/main_button"
+            android:textColor="@color/panton_grey"
+            android:textSize="@dimen/main_btn_text_size"
+            android:textStyle="bold"
+            android:text="Setting" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/main_btn_exit"
+            android:layout_margin="@dimen/main_btn_margin_size"
+            android:layout_width="@dimen/main_btn_size"
+            android:layout_height="@dimen/main_btn_size"
+            android:background="@drawable/main_button"
+            android:textColor="@color/panton_grey"
+            android:textSize="@dimen/main_btn_text_size"
+            android:textStyle="bold"
+            android:text="Exit" />
+    </LinearLayout>
+
+</LinearLayout>
