@@ -7,10 +7,19 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.widget.SearchView
+import androidx.recyclerview.widget.GridLayoutManager
 import com.team6.coordiking_kimcoordi.R
+import com.team6.coordiking_kimcoordi.adapter.GalleryImageAdapter
+import com.team6.coordiking_kimcoordi.adapter.GalleryImageClickListener
+import com.team6.coordiking_kimcoordi.adapter.Image
+import com.team6.coordiking_kimcoordi.fragment.GalleryFullscreenFragment
 import kotlinx.android.synthetic.main.activity_my_outfits.*
+import kotlinx.android.synthetic.main.activity_my_wardrobe.*
 
-class MyOutfitsActivity : AppCompatActivity() {
+class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
+    private val SPAN_COUNT = 3
+    private val imageList = ArrayList<Image>()
+    lateinit var galleryAdapter: GalleryImageAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_outfits)
@@ -28,7 +37,26 @@ class MyOutfitsActivity : AppCompatActivity() {
         tb_outfit.setNavigationOnClickListener{ onBackPressed()}
 
         handleIntent(intent)
+
+        // init adapter
+        galleryAdapter = GalleryImageAdapter(imageList)
+        galleryAdapter.listener = this
+        // init recyclerview
+        recyclerView1.layoutManager = GridLayoutManager(this, SPAN_COUNT)
+        recyclerView1.adapter = galleryAdapter
+        // load images
+        loadImages()
     }
+    private fun loadImages() {
+        imageList.add(Image("https://user-images.githubusercontent.com/59128435/134841259-4d3737bd-a99f-41fb-907d-df28967a7a83.png", "sample0"))
+        imageList.add(Image("https://user-images.githubusercontent.com/59128435/134841263-cacd128e-aa15-4070-8329-5959892ca58c.png", "sample1"))
+        imageList.add(Image("https://user-images.githubusercontent.com/59128435/134841271-1679762c-061d-433d-a7b4-8ba690642a44.png", "sample2"))
+        imageList.add(Image("https://user-images.githubusercontent.com/59128435/134841273-6c34dca3-c86d-407a-b096-bdb743a3549a.png", "sample3"))
+        imageList.add(Image("https://user-images.githubusercontent.com/59128435/134841275-921f4370-8cd2-4ee5-9d84-3b66a7a3b1a9.png", "sample4"))
+
+        galleryAdapter.notifyDataSetChanged()
+    }
+
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         handleIntent(intent)
@@ -47,5 +75,14 @@ class MyOutfitsActivity : AppCompatActivity() {
             setSearchableInfo(searchManager.getSearchableInfo(componentName))
         }
         return true
+    }
+    override fun onClick(adapterPosition: Int) {
+        val bundle = Bundle()
+        bundle.putSerializable("images", imageList)
+        bundle.putInt("position", adapterPosition)
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        val galleryFragment = GalleryFullscreenFragment()
+        galleryFragment.arguments = bundle
+        galleryFragment.show(fragmentTransaction, "gallery")
     }
 }
