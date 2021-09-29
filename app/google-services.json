@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "953743823553",
+    "project_id": "coordiking-kimcoordi",
+    "storage_bucket": "coordiking-kimcoordi.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:953743823553:android:38794b6f189997cc267a40",
+        "android_client_info": {
+          "package_name": "com.team6.coordiking_kimcoordi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "953743823553-kg33ra2povi34ttrvp01g4e95kemlj97.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBS6usfhZIc9aeQpCvXyMOD6kIVpcTahJc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "953743823553-kg33ra2povi34ttrvp01g4e95kemlj97.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
