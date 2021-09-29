@@ -1,2 +1,0 @@
-# FashionKing-KimCoordi
-develop branch
