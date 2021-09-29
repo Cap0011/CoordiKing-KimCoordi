@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/panton_yellow"
+    tools:context=".activity.MyPageActivity">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/tb_mypage"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="My Page"
+            android:textSize="20sp"
+            android:textColor="@color/panton_grey">
+        </TextView>
+    </androidx.appcompat.widget.Toolbar>
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:id="@+id/mypage_btn_logout"
+        android:text="log out"
+        android:backgroundTint="@color/panton_grey"
+        android:textColor="@color/white"/>
+</LinearLayout>

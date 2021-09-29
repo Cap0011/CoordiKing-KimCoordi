@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/panton_yellow"
+    tools:context=".activity.SnapActivity">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/tb_snap"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Snap"
+            android:textSize="20sp"
+            android:textColor="@color/panton_grey">
+        </TextView>
+    </androidx.appcompat.widget.Toolbar>
+
+    <ImageView
+        android:id="@+id/snap_notify_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="536dp"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/snap_notify_view"
+        android:layout_width="match_parent"
+        android:layout_height="53dp"
+        android:text="TextView" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/snap_notify_prev"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/ic_baseline_arrow_back_ios_24" />
+
+        <Button
+            android:id="@+id/snap_notify_close"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="확인" />
+
+        <ImageButton
+            android:id="@+id/snap_notify_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:rotationY="-180"
+            app:srcCompat="@drawable/ic_baseline_arrow_back_ios_24" />
+
+    </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/snap_notify_disable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="다시 보지 않기" />
+
+
+</LinearLayout>
