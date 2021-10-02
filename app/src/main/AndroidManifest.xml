@@ -3,6 +3,9 @@
     package="com.team6.coordiking_kimcoordi">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" /> <!--박재한 - 카메라 사용 권한-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /><!--박재한 - 로컬 스토리지 사용 권한-->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /><!--박재한 - 로컬 스토리지 사용 권한-->
 
     <application
         android:allowBackup="true"

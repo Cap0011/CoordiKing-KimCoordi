@@ -1,11 +1,21 @@
 package com.team6.coordiking_kimcoordi.activity
 
 import android.app.AlertDialog
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.team6.coordiking_kimcoordi.R
 import kotlinx.android.synthetic.main.activity_snap.*
+import java.util.jar.Manifest
 
 class SnapActivity : AppCompatActivity() {
 
@@ -17,6 +27,12 @@ class SnapActivity : AppCompatActivity() {
     private var is_disable: Boolean = false
     private var disable_alert_flag: Boolean = false
 
+    private var camera_intent = Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA)
+    private var camera_actionistener = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        Log.d("Camera", "take a picture!")
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_snap)
@@ -26,6 +42,17 @@ class SnapActivity : AppCompatActivity() {
 
         snap_notify_close.setOnClickListener {
             // 카메라 권한 요청 및 카메라 사진 촬영 기능
+            val read_permission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
+            val write_permission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
+            val cam_permission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
+
+            var permission_request_code: Int = 1
+            if (read_permission == PackageManager.PERMISSION_DENIED || write_permission == PackageManager.PERMISSION_DENIED || cam_permission == PackageManager.PERMISSION_DENIED) {
+                ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.CAMERA), permission_request_code)
+            }
+            else {
+                startCameraIntent()
+            }
         }
 
         snap_notify_prev.setOnClickListener {
@@ -73,5 +100,14 @@ class SnapActivity : AppCompatActivity() {
         }
 
         tb_snap.setNavigationOnClickListener{ onBackPressed()}
+    }
+
+    private fun requsetPermission(permission: String) {
+        ActivityCompat.requestPermissions(this, arrayOf(permission), 1)
+        //ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.CAMERA), 1)
+    }
+
+    private fun startCameraIntent() {
+        this.camera_actionistener.launch(camera_intent)
     }
 }

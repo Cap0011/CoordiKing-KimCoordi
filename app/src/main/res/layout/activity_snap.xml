@@ -30,6 +30,8 @@
         android:id="@+id/snap_notify_view"
         android:layout_width="match_parent"
         android:layout_height="53dp"
+        android:textSize="17sp"
+        android:paddingHorizontal="10dp"
         android:text="TextView" />
 
     <LinearLayout
@@ -42,6 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:translationZ="2dp"
             app:srcCompat="@drawable/ic_baseline_arrow_back_ios_24" />
 
         <Button
@@ -57,6 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:rotationY="-180"
+            android:translationZ="2dp"
             app:srcCompat="@drawable/ic_baseline_arrow_back_ios_24" />
 
     </LinearLayout>
