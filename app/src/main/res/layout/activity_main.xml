@@ -20,22 +20,25 @@
             android:layout_marginRight="40dp"
             android:orientation="horizontal">
             <TextView
-                android:layout_width="50dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/main_tv_temp"
                 android:text="20C"
                 android:textColor="@color/panton_yellow"
                 android:gravity="start"
                 android:fontFamily="casual"
-                android:textSize="20sp"/>
+                android:textSize="18sp"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Manchester, England"
-
+                android:layout_weight="2"
+                android:id="@+id/main_tv_city"
+                android:text="Manchester"
                 android:textColor="@color/panton_yellow"
                 android:fontFamily="casual"
                 android:gravity="end"
-                android:textSize="20sp"/>
+                android:textSize="18sp"/>
         </LinearLayout>
 
         <ImageView
