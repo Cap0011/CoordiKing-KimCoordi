@@ -39,7 +39,6 @@ class MainActivity : AppCompatActivity() {
         }
         main_btn_exit.setOnClickListener {
             val pref = getSharedPreferences("pref", MODE_PRIVATE)
-            Log.d(TAG, "What the fuck with exit?: "+pref.getBoolean("login",false).toString())
             if(!pref.getBoolean("login",false)){
                 Firebase.auth.signOut()
             }

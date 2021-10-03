@@ -1,7 +1,5 @@
 package com.team6.coordiking_kimcoordi.activity
 
-import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
@@ -9,13 +7,12 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.team6.coordiking_kimcoordi.R
 import kotlinx.android.synthetic.main.activity_snap.*
-import java.util.jar.Manifest
 
 class SnapActivity : AppCompatActivity() {
 
@@ -31,6 +28,7 @@ class SnapActivity : AppCompatActivity() {
     private var camera_actionistener = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         Log.d("Camera", "take a picture!")
     }
+    private var permission_request_code = 1
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,23 +36,18 @@ class SnapActivity : AppCompatActivity() {
         setContentView(R.layout.activity_snap)
         setUpActionBar()
 
-        snap_notify_view.setText("이 페이지는 사진을 찍을 때의 가이드라인을 제시합니다.")
-
         snap_notify_close.setOnClickListener {
-            // 카메라 권한 요청 및 카메라 사진 촬영 기능
             val read_permission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
-            val write_permission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
-            val cam_permission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
+            val write_permission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            val cam_permission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA)
 
-            var permission_request_code: Int = 1
             if (read_permission == PackageManager.PERMISSION_DENIED || write_permission == PackageManager.PERMISSION_DENIED || cam_permission == PackageManager.PERMISSION_DENIED) {
                 ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.CAMERA), permission_request_code)
             }
             else {
-                startCameraIntent()
+                camera_actionistener.launch(camera_intent)
             }
         }
-
         snap_notify_prev.setOnClickListener {
             if (guideline_curr_view == FIRST_VIEW_INDEX) {
                 Toast.makeText(applicationContext, "no more prev guideline.", Toast.LENGTH_SHORT).show()
@@ -89,6 +82,7 @@ class SnapActivity : AppCompatActivity() {
             is_disable = !is_disable
 
         }
+
     }
     private fun setUpActionBar(){
         setSupportActionBar(tb_snap)
@@ -99,15 +93,8 @@ class SnapActivity : AppCompatActivity() {
             actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24)
         }
 
+
+
         tb_snap.setNavigationOnClickListener{ onBackPressed()}
-    }
-
-    private fun requsetPermission(permission: String) {
-        ActivityCompat.requestPermissions(this, arrayOf(permission), 1)
-        //ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.CAMERA), 1)
-    }
-
-    private fun startCameraIntent() {
-        this.camera_actionistener.launch(camera_intent)
     }
 }
