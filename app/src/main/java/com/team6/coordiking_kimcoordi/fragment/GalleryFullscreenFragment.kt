@@ -10,12 +10,10 @@ import androidx.fragment.app.DialogFragment
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.team6.coordiking_kimcoordi.R
 import com.team6.coordiking_kimcoordi.adapter.Image
 import com.team6.coordiking_kimcoordi.helper.ZoomOutPageTransformer
 import kotlinx.android.synthetic.main.image_fullscreen.view.*
-import kotlin.math.abs
 
 class GalleryFullscreenFragment: DialogFragment() {
     private var imageList = ArrayList<Image>()
@@ -64,7 +62,7 @@ class GalleryFullscreenFragment: DialogFragment() {
             val image = imageList.get(position)
             // load image
             Glide.with(context!!)
-                    .load(image.imageUrl)
+                    .load(image.bitmap)
                     .into(view.ivFullscreenImage)
             container.addView(view)
             return view

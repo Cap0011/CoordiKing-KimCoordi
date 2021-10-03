@@ -1,6 +1,8 @@
 package com.team6.coordiking_kimcoordi.adapter
 
+import android.graphics.Bitmap
+
 data class Image(
-    val imageUrl: String,
+    val bitmap: Bitmap,
     val title: String
 )

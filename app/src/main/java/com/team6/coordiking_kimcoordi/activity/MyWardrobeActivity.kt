@@ -1,19 +1,19 @@
 package com.team6.coordiking_kimcoordi.activity
 
+import android.app.Activity
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.Menu
 import android.widget.SearchView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.team6.coordiking_kimcoordi.R
@@ -21,6 +21,7 @@ import com.team6.coordiking_kimcoordi.adapter.Clothes
 import com.team6.coordiking_kimcoordi.adapter.GalleryImageAdapter
 import com.team6.coordiking_kimcoordi.adapter.GalleryImageClickListener
 import com.team6.coordiking_kimcoordi.adapter.Image
+import com.team6.coordiking_kimcoordi.databinding.ActivityMyWardrobeBinding
 import com.team6.coordiking_kimcoordi.fragment.GalleryFullscreenFragment
 import kotlinx.android.synthetic.main.activity_my_wardrobe.*
 
@@ -34,7 +35,10 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_my_wardrobe)
+        // init view binding
+        val binding = ActivityMyWardrobeBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
         setUpActionBar()
 
         // init adapter
@@ -55,14 +59,45 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
 
         //test function(load)
         loadTest()
+
+        binding.addButton.setOnClickListener{
+            // 갤러리에서 추가
+            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            intent.type = "image/*"
+            startActivityForResult(intent,10)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode === 10 && resultCode === Activity.RESULT_OK){
+            try {
+                //비율 계산, 지정
+                val option = BitmapFactory.Options()
+                option.inSampleSize = 4
+                //이미지 불러오기
+                var inputStream = contentResolver.openInputStream(data!!.data!!)
+                val bitmap = BitmapFactory.decodeStream(inputStream,null,option)
+                inputStream!!.close()
+                inputStream = null
+                bitmap?.let{
+                    imageList.add(Image(bitmap,inputStream.toString()))
+                    galleryAdapter.notifyDataSetChanged()
+                }?:let{
+                    Log.d("kkang","bitmap null")
+                }
+                } catch (e: Exception){
+                    e.printStackTrace()
+            }
+        }
     }
 
     private fun loadImages() {
-        imageList.add(Image("https://user-images.githubusercontent.com/59128435/134841259-4d3737bd-a99f-41fb-907d-df28967a7a83.png", "sample0"))
-        imageList.add(Image("https://user-images.githubusercontent.com/59128435/134841263-cacd128e-aa15-4070-8329-5959892ca58c.png", "sample1"))
-        imageList.add(Image("https://user-images.githubusercontent.com/59128435/134841271-1679762c-061d-433d-a7b4-8ba690642a44.png", "sample2"))
-        imageList.add(Image("https://user-images.githubusercontent.com/59128435/134841273-6c34dca3-c86d-407a-b096-bdb743a3549a.png", "sample3"))
-        imageList.add(Image("https://user-images.githubusercontent.com/59128435/134841275-921f4370-8cd2-4ee5-9d84-3b66a7a3b1a9.png", "sample4"))
+//        imageList.add(Image("https://user-images.githubusercontent.com/59128435/134841259-4d3737bd-a99f-41fb-907d-df28967a7a83.png", "sample0"))
+//        imageList.add(Image("https://user-images.githubusercontent.com/59128435/134841263-cacd128e-aa15-4070-8329-5959892ca58c.png", "sample1"))
+//        imageList.add(Image("https://user-images.githubusercontent.com/59128435/134841271-1679762c-061d-433d-a7b4-8ba690642a44.png", "sample2"))
+//        imageList.add(Image("https://user-images.githubusercontent.com/59128435/134841273-6c34dca3-c86d-407a-b096-bdb743a3549a.png", "sample3"))
+//        imageList.add(Image("https://user-images.githubusercontent.com/59128435/134841275-921f4370-8cd2-4ee5-9d84-3b66a7a3b1a9.png", "sample4"))
 
         galleryAdapter.notifyDataSetChanged()
     }
