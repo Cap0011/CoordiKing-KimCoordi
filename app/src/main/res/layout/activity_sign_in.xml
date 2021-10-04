@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/initial_margin_size"
+    android:orientation="vertical"
+    tools:context=".activity.SignInActivity">
+
+    <ImageView
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:src="@drawable/ic_signin_sample"
+        android:gravity="center"></ImageView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:orientation="vertical">
+        <EditText
+            android:id="@+id/signin_et_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:hint="Email Address"></EditText>
+        <EditText
+            android:id="@+id/signin_et_password"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:hint="Password"></EditText>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/signin_btn_signin"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:backgroundTint="@color/panton_yellow"
+            android:textColor="@color/panton_grey"
+            android:text="Sign In"></androidx.appcompat.widget.AppCompatButton>
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/signin_chk"
+            android:text="Keep logged in?"
+            android:textSize="12sp"
+            android:textColor="@color/panton_grey"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/panton_grey"
+        android:textSize="15sp"
+        android:layout_marginTop="15dp"
+        android:textStyle="bold"
+        android:text="If you're not a member yet, join us!"></TextView>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/signin_btn_signup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:text="Sign Up"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/panton_grey"></androidx.appcompat.widget.AppCompatButton>
+</LinearLayout>
