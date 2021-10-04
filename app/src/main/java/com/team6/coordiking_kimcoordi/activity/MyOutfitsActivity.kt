@@ -5,21 +5,29 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.widget.SearchView
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.team6.coordiking_kimcoordi.R
-import com.team6.coordiking_kimcoordi.adapter.GalleryImageAdapter
-import com.team6.coordiking_kimcoordi.adapter.GalleryImageClickListener
-import com.team6.coordiking_kimcoordi.adapter.Image
+import com.team6.coordiking_kimcoordi.adapter.*
 import com.team6.coordiking_kimcoordi.fragment.GalleryFullscreenFragment
 import kotlinx.android.synthetic.main.activity_my_outfits.*
 import kotlinx.android.synthetic.main.activity_my_wardrobe.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
     private val SPAN_COUNT = 3
     private val imageList = ArrayList<Image>()
     lateinit var galleryAdapter: GalleryImageAdapter
+    val database = Firebase.database.reference
+    lateinit var user: FirebaseUser
+    var myOutfit: MutableList<Outfit> = arrayListOf()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_outfits)
@@ -46,6 +54,16 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
         recyclerView1.adapter = galleryAdapter
         // load images
         loadImages()
+
+        user = Firebase.auth.currentUser!!
+
+        //test function(save)
+        saveTest()
+
+        loadMyOutfit()
+
+        //test function(load)
+        loadTest()
     }
     private fun loadImages() {
         imageList.add(Image("https://user-images.githubusercontent.com/59128435/134841259-4d3737bd-a99f-41fb-907d-df28967a7a83.png", "sample0"))
@@ -84,5 +102,60 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
         val galleryFragment = GalleryFullscreenFragment()
         galleryFragment.arguments = bundle
         galleryFragment.show(fragmentTransaction, "gallery")
+    }
+    private fun saveOutfit(uid: String, url: String, style: Int, memo: String, date: String) {
+        database.child(uid).child("outfit").child(myOutfit.size.toString()).child("url").setValue(url)
+        database.child(uid).child("outfit").child(myOutfit.size.toString()).child("style").setValue(style)
+        database.child(uid).child("outfit").child(myOutfit.size.toString()).child("memo").setValue(memo)
+        database.child(uid).child("outfit").child(myOutfit.size.toString()).child("date").setValue(date)
+        myOutfit.add(Outfit(url, style, memo, date))
+        database.child(uid).child("outfit").child("num").setValue(myOutfit.size.toString())
+    }
+
+    private fun loadMyOutfit(){
+        val uid = user.uid
+        database.child(uid).child("outfit").child("num").get().addOnSuccessListener {
+            var outfitNum = (it.value as String).toInt()
+            for(n in 0 until outfitNum){
+                var url: String = ""
+                var style: Int = 0
+                var memo: String = ""
+                var date: String = ""
+                database.child(uid).child("outfit").child(n.toString()).child("url").get().addOnSuccessListener {
+                    url = it.value as String
+                }
+                database.child(uid).child("outfit").child(n.toString()).child("style").get().addOnSuccessListener {
+                    style = (it.value as Long).toInt()
+                }
+                database.child(uid).child("outfit").child(n.toString()).child("memo").get().addOnSuccessListener {
+                    memo = it.value as String
+                }
+                database.child(uid).child("outfit").child(n.toString()).child("date").get().addOnSuccessListener {
+                    date = it.value as String
+                }
+                myOutfit.add(Outfit(url, style, memo, date))
+            }
+        }.addOnFailureListener{
+            Log.e("firebase", "Error getting data", it)
+        }
+    }
+
+    private fun saveTest(){
+        saveOutfit(user.uid, "url0", 0, "memo", "date")
+        saveOutfit(user.uid, "url1", 1, "memo", "date")
+        saveOutfit(user.uid, "url2", 3, "memo", "date")
+        saveOutfit(user.uid, "url3", 2, "memo", "date")
+        saveOutfit(user.uid, "url4", 0, "memo", "date")
+        saveOutfit(user.uid, "url5", 0, "memo", "date")
+        saveOutfit(user.uid, "url6", 7, "memo", "date")
+        saveOutfit(user.uid, "url7", 9, "memo", "date")
+        saveOutfit(user.uid, "url8", 2, "memo", "date")
+        saveOutfit(user.uid, "url9", 0, "memo", "date")
+    }
+
+    private fun loadTest(){
+        for (outfit in myOutfit){
+            Log.d("My Outfit", "${outfit.url}")
+        }
     }
 }

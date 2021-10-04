@@ -7,6 +7,7 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.team6.coordiking_kimcoordi.R
 import kotlinx.android.synthetic.main.activity_sign_up.*
@@ -14,6 +15,8 @@ import kotlinx.android.synthetic.main.activity_sign_up.*
 class SignUpActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
+    private val database = Firebase.database.reference
+    lateinit var curUser: FirebaseUser
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,6 +72,9 @@ class SignUpActivity : AppCompatActivity() {
             val intent = Intent(applicationContext, SignInActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
+            curUser = Firebase.auth.currentUser!!
+            database.child(curUser.uid).child("wardrobe").child("num").setValue(0)
+            database.child(curUser.uid).child("outfit").child("num").setValue(0)
         }
     }
 }

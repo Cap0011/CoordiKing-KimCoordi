@@ -3,12 +3,21 @@ package com.team6.coordiking_kimcoordi.activity
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.widget.SearchView
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.team6.coordiking_kimcoordi.R
+import com.team6.coordiking_kimcoordi.adapter.Clothes
 import com.team6.coordiking_kimcoordi.adapter.GalleryImageAdapter
 import com.team6.coordiking_kimcoordi.adapter.GalleryImageClickListener
 import com.team6.coordiking_kimcoordi.adapter.Image
@@ -19,6 +28,9 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
     private val SPAN_COUNT = 3
     private val imageList = ArrayList<Image>()
     lateinit var galleryAdapter: GalleryImageAdapter
+    val database = Firebase.database.reference
+    lateinit var user: FirebaseUser
+    var myWardrobe: MutableList<Clothes> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +45,16 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
         recyclerView.adapter = galleryAdapter
         // load images
         loadImages()
+
+        user = Firebase.auth.currentUser!!
+
+        //test function(save)
+        saveTest()
+
+        loadMyWardrobe()
+
+        //test function(load)
+        loadTest()
     }
 
     private fun loadImages() {
@@ -86,5 +108,61 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
         val galleryFragment = GalleryFullscreenFragment()
         galleryFragment.arguments = bundle
         galleryFragment.show(fragmentTransaction, "gallery")
+    }
+
+    private fun saveClothes(uid: String, url: String, type: Int, colour: Int, name: String) {
+        database.child(uid).child("wardrobe").child(myWardrobe.size.toString()).child("url").setValue(url)
+        database.child(uid).child("wardrobe").child(myWardrobe.size.toString()).child("type").setValue(type)
+        database.child(uid).child("wardrobe").child(myWardrobe.size.toString()).child("colour").setValue(colour)
+        database.child(uid).child("wardrobe").child(myWardrobe.size.toString()).child("name").setValue(name)
+        myWardrobe.add(Clothes(url, type, colour, name))
+        database.child(uid).child("wardrobe").child("num").setValue(myWardrobe.size.toString())
+    }
+
+    private fun loadMyWardrobe(){
+        val uid = user.uid
+        database.child(uid).child("wardrobe").child("num").get().addOnSuccessListener {
+            var clothesNum = (it.value as String).toInt()
+            for(n in 0 until clothesNum){
+                var url:String = ""
+                var type: Int = 0
+                var colour: Int = 0
+                var name: String = ""
+                database.child(uid).child("wardrobe").child(n.toString()).child("url").get().addOnSuccessListener {
+                    url = it.value as String
+                }
+                database.child(uid).child("wardrobe").child(n.toString()).child("type").get().addOnSuccessListener {
+                    type = (it.value as Long).toInt()
+                }
+                database.child(uid).child("wardrobe").child(n.toString()).child("colour").get().addOnSuccessListener {
+                    colour = (it.value as Long).toInt()
+                }
+                database.child(uid).child("wardrobe").child(n.toString()).child("name").get().addOnSuccessListener {
+                    name = it.value as String
+                }
+                myWardrobe.add(Clothes(url, type, colour, name))
+            }
+        }.addOnFailureListener{
+            Log.e("firebase", "Error getting data", it)
+        }
+    }
+
+    private fun saveTest(){
+        saveClothes(user.uid, "url0", 0, 1, "name0")
+        saveClothes(user.uid, "url1", 1, 1, "name1")
+        saveClothes(user.uid, "url2", 3, 0, "name2")
+        saveClothes(user.uid, "url3", 2, 1, "name3")
+        saveClothes(user.uid, "url4", 0, 1, "name4")
+        saveClothes(user.uid, "url5", 0, 5, "name5")
+        saveClothes(user.uid, "url6", 7, 1, "name6")
+        saveClothes(user.uid, "url7", 9, 1, "name7")
+        saveClothes(user.uid, "url8", 2, 9, "name8")
+        saveClothes(user.uid, "url9", 0, 9, "name9")
+    }
+
+    private fun loadTest(){
+        for (clothes in myWardrobe){
+            Log.d("My Wardrobe", "${clothes.url}")
+        }
     }
 }

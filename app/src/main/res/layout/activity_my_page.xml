@@ -19,12 +19,61 @@
             android:textColor="@color/panton_grey">
         </TextView>
     </androidx.appcompat.widget.Toolbar>
+
+    <ImageView
+        android:id="@+id/mypage_img_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/mypage_txt_name"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="name" />
+
+    <TextView
+        android:id="@+id/mypage_txt_ID"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="ID: " />
+
+    <TextView
+        android:id="@+id/mypage_txt_phonenumber"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="PhoneNumber: " />
+
+    <TextView
+        android:id="@+id/mypage_txt_email"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="email: " />
+
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/mypage_btn_changeInformation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
-        android:id="@+id/mypage_btn_logout"
-        android:text="log out"
         android:backgroundTint="@color/panton_grey"
-        android:textColor="@color/white"/>
+        android:text="Change Information"
+        android:textColor="@color/white" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/mypage_btn_logout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:backgroundTint="@color/panton_grey"
+        android:text="log out"
+        android:textColor="@color/white" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/mypage_btn_deleteAccount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:backgroundTint="@color/panton_grey"
+        android:text="Delete Account"
+        android:textColor="@color/white" />
 </LinearLayout>

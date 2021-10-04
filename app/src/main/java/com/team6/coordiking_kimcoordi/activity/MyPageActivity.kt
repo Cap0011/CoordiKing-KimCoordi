@@ -2,6 +2,7 @@ package com.team6.coordiking_kimcoordi.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -18,6 +19,20 @@ class MyPageActivity : AppCompatActivity() {
 
             val intent = Intent(applicationContext, SignInActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        }
+
+        mypage_btn_changeInformation.setOnClickListener {
+            val intent = Intent(applicationContext, SettingActivity::class.java)
+            startActivity(intent)
+        }
+
+        mypage_btn_deleteAccount.setOnClickListener {
+            val user = Firebase.auth.currentUser!!
+            user.delete()
+
+            Toast.makeText(baseContext, "Your account has been successfully deleted.", Toast.LENGTH_SHORT).show()
+            val intent = Intent(applicationContext, SignInActivity::class.java)
             startActivity(intent)
         }
         setUpActionBar()
