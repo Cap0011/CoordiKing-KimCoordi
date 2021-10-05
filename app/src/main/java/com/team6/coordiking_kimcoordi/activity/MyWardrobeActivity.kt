@@ -50,7 +50,6 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
         setUpActionBar()
         // load Wardrobe from DB
         loadMyWardrobe()
-        //makeRecyclerView()
         // init adapter
         galleryAdapter = GalleryImageAdapter(imageList)
         galleryAdapter.listener = this
@@ -58,14 +57,8 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
         recyclerView.layoutManager = GridLayoutManager(this, SPAN_COUNT)
         recyclerView.adapter = galleryAdapter
 
-
-        //test function(save)
-//        saveTest()
-
-        //test function(load)
-//        loadTest()
-
         binding.addButton.setOnClickListener{
+            // 플로팅 버튼
             // 갤러리에서 추가
             startActivityForResult(Intent(this,ImageAddActivity::class.java),10)
         }
@@ -79,20 +72,6 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
             imageList.add(Image(dataName))
             galleryAdapter.notifyDataSetChanged()
         }
-    }
-
-    private fun loadImages() {
-//        imageList.add(Image("https://user-images.githubusercontent.com/59128435/134841259-4d3737bd-a99f-41fb-907d-df28967a7a83.png", "sample0"))
-//        imageList.add(Image("https://user-images.githubusercontent.com/59128435/134841263-cacd128e-aa15-4070-8329-5959892ca58c.png", "sample1"))
-//        imageList.add(Image("https://user-images.githubusercontent.com/59128435/134841271-1679762c-061d-433d-a7b4-8ba690642a44.png", "sample2"))
-//        imageList.add(Image("https://user-images.githubusercontent.com/59128435/134841273-6c34dca3-c86d-407a-b096-bdb743a3549a.png", "sample3"))
-//        imageList.add(Image("https://user-images.githubusercontent.com/59128435/134841275-921f4370-8cd2-4ee5-9d84-3b66a7a3b1a9.png", "sample4"))
-
-        // load images from myWardrobe
-        for (clothes in myWardrobe){
-            imageList.add(Image(clothes.name))
-        }
-        galleryAdapter.notifyDataSetChanged()
     }
 
     private fun setUpActionBar(){
@@ -155,6 +134,7 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
                 var clothesNum = (it as String).toInt()
                 for(n in 0 until clothesNum){
                     CoroutineScope(Dispatchers.Main).async {
+                        //데이터베이스 불러오기 동기처리
                         var url:String = ""
                         var type: Int = 0
                         var colour: Int = 0
@@ -184,31 +164,5 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
 
 
 
-    }
-    suspend fun test(){
-        val uid = user.uid
-        var name: String = ""
-        database.child(uid).child("wardrobe").child(1.toString()).child("name").get().addOnSuccessListener {
-            name = it.value as String
-        }.await()
-    }
-
-    private fun saveTest(){
-        saveClothes(user.uid, "url0", 0, 1, "name0")
-        saveClothes(user.uid, "url1", 1, 1, "name1")
-        saveClothes(user.uid, "url2", 3, 0, "name2")
-        saveClothes(user.uid, "url3", 2, 1, "name3")
-        saveClothes(user.uid, "url4", 0, 1, "name4")
-        saveClothes(user.uid, "url5", 0, 5, "name5")
-        saveClothes(user.uid, "url6", 7, 1, "name6")
-        saveClothes(user.uid, "url7", 9, 1, "name7")
-        saveClothes(user.uid, "url8", 2, 9, "name8")
-        saveClothes(user.uid, "url9", 0, 9, "name9")
-    }
-
-    private fun loadTest(){
-        for (clothes in myWardrobe){
-            Log.d("My Wardrobe", "${clothes.url}")
-        }
     }
 }

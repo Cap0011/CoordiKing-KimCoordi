@@ -43,7 +43,6 @@ android {
 
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'com.google.gms.google-services'
 
 dependencies {
 

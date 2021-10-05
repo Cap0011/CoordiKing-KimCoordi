@@ -25,9 +25,10 @@ class ImageAddActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //바인딩 초기화
         binding= ActivityImageAddBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        // 갤러리 열기
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         intent.type = "image/*"
         startActivityForResult(intent,10)
@@ -86,13 +87,13 @@ class ImageAddActivity : AppCompatActivity() {
         val storageRef: StorageReference = storage.reference
         //실제 업로드하는 파일을 참조하는 StorageReference 를 만든다.
         val imgRef: StorageReference = storageRef.child("${uid}/${name}.png")
-        //비트맥->바이트
+        //비트맵->바이트
         val baos =ByteArrayOutputStream()
 
         bitmap?.compress(Bitmap.CompressFormat.JPEG,100,baos)
 
         val imageData = baos.toByteArray()
-        //이미지 업로드
+        //이미지 업로드 to Storage
         var uploadTask = imgRef.putBytes(imageData)
         uploadTask.addOnFailureListener{
             Log.d("aaa", "failure....."+it)
