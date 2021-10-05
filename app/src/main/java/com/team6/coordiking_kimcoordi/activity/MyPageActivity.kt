@@ -16,8 +16,8 @@ class MyPageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_page)
 
-        mypage_txt_name.setText(curUser.displayName)
-        mypage_txt_email.setText("email: " + curUser.email)
+        mypage_txt_name.setText(curUser.displayName.toString())
+        mypage_txt_email.setText("email: " + curUser.email.toString())
 
         mypage_btn_logout.setOnClickListener {
             Firebase.auth.signOut()
