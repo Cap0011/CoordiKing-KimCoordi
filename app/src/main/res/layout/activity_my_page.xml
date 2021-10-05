@@ -22,13 +22,13 @@
 
     <ImageView
         android:id="@+id/mypage_img_profile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/mypage_txt_name"
-        android:layout_width="100dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:text="name" />
 
@@ -46,7 +46,7 @@
 
     <TextView
         android:id="@+id/mypage_txt_email"
-        android:layout_width="100dp"
+        android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:text="email: " />
 
@@ -76,4 +76,5 @@
         android:backgroundTint="@color/panton_grey"
         android:text="Delete Account"
         android:textColor="@color/white" />
+
 </LinearLayout>

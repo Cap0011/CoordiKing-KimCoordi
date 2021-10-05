@@ -10,9 +10,14 @@ import com.team6.coordiking_kimcoordi.R
 import kotlinx.android.synthetic.main.activity_my_page.*
 
 class MyPageActivity : AppCompatActivity() {
+    private val curUser = Firebase.auth.currentUser!!
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_page)
+
+        mypage_txt_name.setText(curUser.displayName)
+        mypage_txt_email.setText("email: " + curUser.email)
 
         mypage_btn_logout.setOnClickListener {
             Firebase.auth.signOut()
@@ -28,10 +33,13 @@ class MyPageActivity : AppCompatActivity() {
         }
 
         mypage_btn_deleteAccount.setOnClickListener {
-            val user = Firebase.auth.currentUser!!
-            user.delete()
+            curUser.delete()
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        Toast.makeText(baseContext, "Your account has been successfully deleted.", Toast.LENGTH_LONG).show()
+                    }
+                }
 
-            Toast.makeText(baseContext, "Your account has been successfully deleted.", Toast.LENGTH_SHORT).show()
             val intent = Intent(applicationContext, SignInActivity::class.java)
             startActivity(intent)
         }
