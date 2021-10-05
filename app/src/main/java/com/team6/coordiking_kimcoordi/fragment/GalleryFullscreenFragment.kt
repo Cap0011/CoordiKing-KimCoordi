@@ -2,6 +2,7 @@ package com.team6.coordiking_kimcoordi.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.team6.coordiking_kimcoordi.R
+import com.team6.coordiking_kimcoordi.activity.MyApplication
 import com.team6.coordiking_kimcoordi.adapter.Image
 import com.team6.coordiking_kimcoordi.helper.ZoomOutPageTransformer
 import kotlinx.android.synthetic.main.image_fullscreen.view.*
@@ -60,10 +62,16 @@ class GalleryFullscreenFragment: DialogFragment() {
             val layoutInflater = activity?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val view = layoutInflater.inflate(R.layout.image_fullscreen, container, false)
             val image = imageList.get(position)
-            // load image
-            Glide.with(context!!)
-                    .load(image.bitmap)
-                    .into(view.ivFullscreenImage)
+
+            //storage 이미지 다운로드
+            val imgRef= MyApplication.storage
+                .reference
+                .child("${MyApplication.user.uid}/${image.title}.png").downloadUrl.addOnSuccessListener {
+                    // load image
+                    Glide.with(context!!).load(it).into(view.ivFullscreenImage)
+                }.addOnCanceledListener {
+                    Log.d("kim","failed to download")
+                }
             container.addView(view)
             return view
         }

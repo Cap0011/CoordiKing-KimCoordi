@@ -4,9 +4,7 @@ import android.app.Activity
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.Menu
 import android.widget.SearchView
@@ -16,6 +14,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import com.team6.coordiking_kimcoordi.R
 import com.team6.coordiking_kimcoordi.adapter.Clothes
 import com.team6.coordiking_kimcoordi.adapter.GalleryImageAdapter
@@ -24,71 +23,61 @@ import com.team6.coordiking_kimcoordi.adapter.Image
 import com.team6.coordiking_kimcoordi.databinding.ActivityMyWardrobeBinding
 import com.team6.coordiking_kimcoordi.fragment.GalleryFullscreenFragment
 import kotlinx.android.synthetic.main.activity_my_wardrobe.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.tasks.await
 
 class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
     private val SPAN_COUNT = 3
     private val imageList = ArrayList<Image>()
     lateinit var galleryAdapter: GalleryImageAdapter
     val database = Firebase.database.reference
+    val storage = Firebase.storage
     lateinit var user: FirebaseUser
     var myWardrobe: MutableList<Clothes> = arrayListOf()
+
+    lateinit var binding: ActivityMyWardrobeBinding
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // init view binding
-        val binding = ActivityMyWardrobeBinding.inflate(layoutInflater)
+        binding = ActivityMyWardrobeBinding.inflate(layoutInflater)
+        user = Firebase.auth.currentUser!!
 
         setContentView(binding.root)
         setUpActionBar()
-
+        // load Wardrobe from DB
+        loadMyWardrobe()
+        //makeRecyclerView()
         // init adapter
         galleryAdapter = GalleryImageAdapter(imageList)
         galleryAdapter.listener = this
         // init recyclerview
         recyclerView.layoutManager = GridLayoutManager(this, SPAN_COUNT)
         recyclerView.adapter = galleryAdapter
-        // load images
-        loadImages()
 
-        user = Firebase.auth.currentUser!!
 
         //test function(save)
-        saveTest()
-
-        loadMyWardrobe()
+//        saveTest()
 
         //test function(load)
-        loadTest()
+//        loadTest()
 
         binding.addButton.setOnClickListener{
             // 갤러리에서 추가
-            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            intent.type = "image/*"
-            startActivityForResult(intent,10)
+            startActivityForResult(Intent(this,ImageAddActivity::class.java),10)
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode === 10 && resultCode === Activity.RESULT_OK){
-            try {
-                //비율 계산, 지정
-                val option = BitmapFactory.Options()
-                option.inSampleSize = 4
-                //이미지 불러오기
-                var inputStream = contentResolver.openInputStream(data!!.data!!)
-                val bitmap = BitmapFactory.decodeStream(inputStream,null,option)
-                inputStream!!.close()
-                inputStream = null
-                bitmap?.let{
-                    imageList.add(Image(bitmap,inputStream.toString()))
-                    galleryAdapter.notifyDataSetChanged()
-                }?:let{
-                    Log.d("kkang","bitmap null")
-                }
-                } catch (e: Exception){
-                    e.printStackTrace()
-            }
+            val dataName : String = data?.getStringExtra("dataName")!!
+            saveClothes(user.uid, "test", 0, 0, dataName)
+            imageList.add(Image(dataName))
+            galleryAdapter.notifyDataSetChanged()
         }
     }
 
@@ -99,6 +88,10 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
 //        imageList.add(Image("https://user-images.githubusercontent.com/59128435/134841273-6c34dca3-c86d-407a-b096-bdb743a3549a.png", "sample3"))
 //        imageList.add(Image("https://user-images.githubusercontent.com/59128435/134841275-921f4370-8cd2-4ee5-9d84-3b66a7a3b1a9.png", "sample4"))
 
+        // load images from myWardrobe
+        for (clothes in myWardrobe){
+            imageList.add(Image(clothes.name))
+        }
         galleryAdapter.notifyDataSetChanged()
     }
 
@@ -155,31 +148,49 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
     }
 
     private fun loadMyWardrobe(){
+        imageList.clear()
         val uid = user.uid
         database.child(uid).child("wardrobe").child("num").get().addOnSuccessListener {
-            var clothesNum = (it.value as String).toInt()
-            for(n in 0 until clothesNum){
-                var url:String = ""
-                var type: Int = 0
-                var colour: Int = 0
-                var name: String = ""
-                database.child(uid).child("wardrobe").child(n.toString()).child("url").get().addOnSuccessListener {
-                    url = it.value as String
+            it.value?.let {
+                var clothesNum = (it as String).toInt()
+                for(n in 0 until clothesNum){
+                    CoroutineScope(Dispatchers.Main).async {
+                        var url:String = ""
+                        var type: Int = 0
+                        var colour: Int = 0
+                        var name: String = ""
+                        database.child(uid).child("wardrobe").child(n.toString()).child("url").get().addOnSuccessListener{
+                            url = it.value as String
+                        }.await()
+                        database.child(uid).child("wardrobe").child(n.toString()).child("type").get().addOnSuccessListener {
+                            type = (it.value as Long).toInt()
+                        }.await()
+                        database.child(uid).child("wardrobe").child(n.toString()).child("colour").get().addOnSuccessListener {
+                            colour = (it.value as Long).toInt()
+                        }.await()
+                        database.child(uid).child("wardrobe").child(n.toString()).child("name").get().addOnSuccessListener {
+                            name = it.value as String
+                        }.await()
+                        myWardrobe.add(Clothes(url, type, colour, name))
+                        imageList.add(Image(name))
+                        galleryAdapter.notifyDataSetChanged()
+                    }
                 }
-                database.child(uid).child("wardrobe").child(n.toString()).child("type").get().addOnSuccessListener {
-                    type = (it.value as Long).toInt()
-                }
-                database.child(uid).child("wardrobe").child(n.toString()).child("colour").get().addOnSuccessListener {
-                    colour = (it.value as Long).toInt()
-                }
-                database.child(uid).child("wardrobe").child(n.toString()).child("name").get().addOnSuccessListener {
-                    name = it.value as String
-                }
-                myWardrobe.add(Clothes(url, type, colour, name))
             }
         }.addOnFailureListener{
             Log.e("firebase", "Error getting data", it)
         }
+
+
+
+
+    }
+    suspend fun test(){
+        val uid = user.uid
+        var name: String = ""
+        database.child(uid).child("wardrobe").child(1.toString()).child("name").get().addOnSuccessListener {
+            name = it.value as String
+        }.await()
     }
 
     private fun saveTest(){
