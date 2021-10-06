@@ -26,6 +26,7 @@ import kotlinx.android.synthetic.main.activity_my_wardrobe.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 
 class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
@@ -139,17 +140,19 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
                         var type: Int = 0
                         var colour: Int = 0
                         var name: String = ""
-                        database.child(uid).child("wardrobe").child(n.toString()).child("url").get().addOnSuccessListener{
-                            url = it.value as String
-                        }.await()
-                        database.child(uid).child("wardrobe").child(n.toString()).child("type").get().addOnSuccessListener {
-                            type = (it.value as Long).toInt()
-                        }.await()
-                        database.child(uid).child("wardrobe").child(n.toString()).child("colour").get().addOnSuccessListener {
-                            colour = (it.value as Long).toInt()
-                        }.await()
-                        database.child(uid).child("wardrobe").child(n.toString()).child("name").get().addOnSuccessListener {
-                            name = it.value as String
+                        runBlocking {
+                            database.child(uid).child("wardrobe").child(n.toString()).child("url").get().addOnSuccessListener{
+                                url = it.value as String
+                            }
+                            database.child(uid).child("wardrobe").child(n.toString()).child("type").get().addOnSuccessListener {
+                                type = (it.value as Long).toInt()
+                            }
+                            database.child(uid).child("wardrobe").child(n.toString()).child("colour").get().addOnSuccessListener {
+                                colour = (it.value as Long).toInt()
+                            }
+                            database.child(uid).child("wardrobe").child(n.toString()).child("name").get().addOnSuccessListener {
+                                name = it.value as String
+                            }
                         }.await()
                         myWardrobe.add(Clothes(url, type, colour, name))
                         imageList.add(Image(name))

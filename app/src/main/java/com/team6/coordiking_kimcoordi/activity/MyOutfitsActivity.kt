@@ -26,6 +26,7 @@ import kotlinx.android.synthetic.main.activity_my_outfits.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 
 class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
@@ -140,17 +141,19 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
                         var style: Int = 0
                         var name: String = ""
                         var date: String = ""
-                        database.child(uid).child("outfit").child(n.toString()).child("url").get().addOnSuccessListener{
-                            url = it.value as String
-                        }.await()
-                        database.child(uid).child("outfit").child(n.toString()).child("style").get().addOnSuccessListener {
-                            style = (it.value as Long).toInt()
-                        }.await()
-                        database.child(uid).child("outfit").child(n.toString()).child("name").get().addOnSuccessListener {
-                            name = it.value as String
-                        }.await()
-                        database.child(uid).child("outfit").child(n.toString()).child("date").get().addOnSuccessListener {
-                            date = it.value as String
+                        runBlocking {
+                            database.child(uid).child("outfit").child(n.toString()).child("url").get().addOnSuccessListener{
+                                url = it.value as String
+                            }
+                            database.child(uid).child("outfit").child(n.toString()).child("style").get().addOnSuccessListener {
+                                style = (it.value as Long).toInt()
+                            }
+                            database.child(uid).child("outfit").child(n.toString()).child("name").get().addOnSuccessListener {
+                                name = it.value as String
+                            }
+                            database.child(uid).child("outfit").child(n.toString()).child("date").get().addOnSuccessListener {
+                                date = it.value as String
+                            }
                         }.await()
                         myOutfit.add(Outfit(url, style, name, date))
                         imageList.add(Image(name))
