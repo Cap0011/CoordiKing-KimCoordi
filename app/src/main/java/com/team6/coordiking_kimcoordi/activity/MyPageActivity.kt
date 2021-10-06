@@ -41,6 +41,7 @@ class MyPageActivity : AppCompatActivity() {
                 }
 
             val intent = Intent(applicationContext, SignInActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }
         setUpActionBar()

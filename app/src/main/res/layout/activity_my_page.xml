@@ -22,10 +22,10 @@
 
     <ImageView
         android:id="@+id/mypage_img_profile"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:visibility="visible"
-        tools:src="@tools:sample/avatars" />
+        tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/mypage_txt_name"
