@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -17,12 +18,10 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.team6.coordiking_kimcoordi.R
-import com.team6.coordiking_kimcoordi.adapter.Clothes
-import com.team6.coordiking_kimcoordi.adapter.GalleryImageAdapter
-import com.team6.coordiking_kimcoordi.adapter.GalleryImageClickListener
-import com.team6.coordiking_kimcoordi.adapter.Image
+import com.team6.coordiking_kimcoordi.adapter.*
 import com.team6.coordiking_kimcoordi.fragment.GalleryFullscreenFragment
 import kotlinx.android.synthetic.main.activity_my_wardrobe.*
+import kotlinx.android.synthetic.main.activity_simulator.*
 
 class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
     private val SPAN_COUNT = 3
@@ -51,7 +50,7 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
         //test function(save)
         saveTest()
 
-        loadMyWardrobe()
+        //loadMyWardrobe()
 
         //test function(load)
         loadTest()
@@ -101,13 +100,22 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
     }
 
     override fun onClick(adapterPosition: Int) {
-        val bundle = Bundle()
-        bundle.putSerializable("images", imageList)
-        bundle.putInt("position", adapterPosition)
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        val galleryFragment = GalleryFullscreenFragment()
-        galleryFragment.arguments = bundle
-        galleryFragment.show(fragmentTransaction, "gallery")
+        // 수정
+        if (intent.hasExtra("SimulatorActivity")) {
+            val intent = Intent(this, SimulatorActivity::class.java)
+            intent.putExtra("good", "good")
+            Toast.makeText(this, "okay", Toast.LENGTH_SHORT).show()
+            finish()
+
+        }else {
+            val bundle = Bundle()
+            bundle.putSerializable("images", imageList)
+            bundle.putInt("position", adapterPosition)
+            val fragmentTransaction = supportFragmentManager.beginTransaction()
+            val galleryFragment = GalleryFullscreenFragment()
+            galleryFragment.arguments = bundle
+            galleryFragment.show(fragmentTransaction, "gallery")
+        }
     }
 
     private fun saveClothes(uid: String, url: String, type: Int, colour: Int, name: String) {

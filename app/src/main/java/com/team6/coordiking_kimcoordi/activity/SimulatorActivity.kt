@@ -1,9 +1,12 @@
 package com.team6.coordiking_kimcoordi.activity
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import com.team6.coordiking_kimcoordi.R
+import com.team6.coordiking_kimcoordi.fragment.GalleryFullscreenFragment
 import kotlinx.android.synthetic.main.activity_simulator.*
 
 class SimulatorActivity : AppCompatActivity() {
@@ -13,8 +16,11 @@ class SimulatorActivity : AppCompatActivity() {
         setUpActionBar()
 
         btn_Jacket.setOnClickListener {
-            iv_Jacket.setImageResource(R.drawable.image4)
-            Toast.makeText(this@SimulatorActivity, "사진이 변경되었습니다.", Toast.LENGTH_SHORT).show()
+            //iv_Jacket.setImageResource(R.drawable.image4)
+            val intent = Intent(this, MyWardrobeActivity::class.java)
+            intent.putExtra("SimulatorActivity", 1)
+            intent.putExtra("image", "iv_jacket")
+            startActivity(intent)
         }
 
         btn_Top.setOnClickListener {
