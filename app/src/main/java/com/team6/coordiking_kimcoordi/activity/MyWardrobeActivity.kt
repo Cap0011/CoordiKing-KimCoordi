@@ -54,8 +54,8 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
         galleryAdapter = GalleryImageAdapter(imageList)
         galleryAdapter.listener = this
         // init recyclerview
-        recyclerView.layoutManager = GridLayoutManager(this, SPAN_COUNT)
-        recyclerView.adapter = galleryAdapter
+        binding.recyclerView.layoutManager = GridLayoutManager(this, SPAN_COUNT)
+        binding.recyclerView.adapter = galleryAdapter
 
         binding.addButton.setOnClickListener{
             // 플로팅 버튼
@@ -160,9 +160,5 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
         }.addOnFailureListener{
             Log.e("firebase", "Error getting data", it)
         }
-
-
-
-
     }
 }
