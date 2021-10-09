@@ -1,4 +1,4 @@
-package com.team6.coordiking_kimcoordi.activity
+  package com.team6.coordiking_kimcoordi.activity
 
 import android.app.SearchManager
 import android.content.Context
@@ -89,6 +89,7 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
         if (Intent.ACTION_SEARCH == intent.action) {
             val query = intent.getStringExtra(SearchManager.QUERY)
             //use the query to search your data
+
         }
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
