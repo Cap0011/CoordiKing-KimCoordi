@@ -67,7 +67,7 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode === 10 && resultCode === Activity.RESULT_OK){
+        if(requestCode === 10 && resultCode === RESULT_OK){
             val dataName : String = data?.getStringExtra("dataName")!!
             saveClothes(user.uid, "test", 0, 0, dataName)
             imageList.add(Image(dataName))
@@ -101,7 +101,7 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.options_menu, menu)
-        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        val searchManager = getSystemService(SEARCH_SERVICE) as SearchManager
         (menu.findItem(R.id.search).actionView as SearchView).apply {
             setSearchableInfo(searchManager.getSearchableInfo(componentName))
         }
