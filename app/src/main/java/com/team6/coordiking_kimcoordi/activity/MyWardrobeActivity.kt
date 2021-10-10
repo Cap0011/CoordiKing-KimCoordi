@@ -28,6 +28,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
+import java.util.*
+import kotlin.collections.ArrayList
 
 class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
     private val SPAN_COUNT = 3
@@ -69,7 +71,9 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode === 10 && resultCode === Activity.RESULT_OK){
             val dataName : String = data?.getStringExtra("dataName")!!
-            saveClothes(user.uid, "test", 0, 0, dataName)
+            val dataColor : Int = data?.getIntExtra("dataColor",0)!!
+            val dataType : Int = data?.getIntExtra("dataType",0)!!
+            saveClothes(user.uid, "test", dataType, dataColor, dataName)
             imageList.add(Image(dataName))
             galleryAdapter.notifyDataSetChanged()
         }
@@ -119,11 +123,16 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
     }
 
     private fun saveClothes(uid: String, url: String, type: Int, colour: Int, name: String) {
+        // 임시
+        val currentTime = Calendar.getInstance().time
+        val date = currentTime.toString()
+        //
         database.child(uid).child("wardrobe").child(myWardrobe.size.toString()).child("url").setValue(url)
         database.child(uid).child("wardrobe").child(myWardrobe.size.toString()).child("type").setValue(type)
         database.child(uid).child("wardrobe").child(myWardrobe.size.toString()).child("colour").setValue(colour)
         database.child(uid).child("wardrobe").child(myWardrobe.size.toString()).child("name").setValue(name)
-        myWardrobe.add(Clothes(url, type, colour, name))
+        database.child(uid).child("wardrobe").child(myWardrobe.size.toString()).child("date").setValue(date)
+        myWardrobe.add(Clothes(url, type, colour, name, date))
         database.child(uid).child("wardrobe").child("num").setValue(myWardrobe.size.toString())
     }
 
@@ -140,6 +149,7 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
                         var type: Int = 0
                         var colour: Int = 0
                         var name: String = ""
+                        var date: String = ""
                         runBlocking {
                             database.child(uid).child("wardrobe").child(n.toString()).child("url").get().addOnSuccessListener{
                                 url = it.value as String
@@ -153,8 +163,11 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
                             database.child(uid).child("wardrobe").child(n.toString()).child("name").get().addOnSuccessListener {
                                 name = it.value as String
                             }
+                            database.child(uid).child("wardrobe").child(n.toString()).child("date").get().addOnSuccessListener {
+                                date = it.value as String
+                            }
                         }.await()
-                        myWardrobe.add(Clothes(url, type, colour, name))
+                        myWardrobe.add(Clothes(url, type, colour, name,date))
                         imageList.add(Image(name))
                         galleryAdapter.notifyDataSetChanged()
                     }
