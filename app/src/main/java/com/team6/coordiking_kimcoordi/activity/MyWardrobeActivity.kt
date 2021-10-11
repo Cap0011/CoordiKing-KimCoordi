@@ -132,7 +132,7 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
         val uid = user.uid
         database.child(uid).child("wardrobe").child("num").get().addOnSuccessListener {
             it.value?.let {
-                var clothesNum = (it as String).toInt()
+                var clothesNum = (it as Long).toInt()
                 for(n in 0 until clothesNum){
                     CoroutineScope(Dispatchers.Main).async {
                         //데이터베이스 불러오기 동기처리
