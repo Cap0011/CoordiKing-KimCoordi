@@ -43,6 +43,7 @@ class SnapActivity : AppCompatActivity() {
     private var camera_actionistener = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         Log.d("Camera", "take a picture!")
         var add_intent = Intent(this, ImageAddActivity::class.java)
+
         startActivityForResult(add_intent, 10)
         finish()
     }
