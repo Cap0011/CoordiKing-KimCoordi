@@ -1,5 +1,6 @@
 package com.team6.coordiking_kimcoordi.activity
 
+import android.util.Log
 import androidx.multidex.MultiDexApplication
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
