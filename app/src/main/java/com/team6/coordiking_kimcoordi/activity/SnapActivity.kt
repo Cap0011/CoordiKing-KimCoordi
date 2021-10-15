@@ -1,5 +1,6 @@
 package com.team6.coordiking_kimcoordi.activity
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
@@ -31,6 +32,7 @@ class SnapActivity : AppCompatActivity() {
         "마지막 페이지입니다. 옷 일부분이 잘리지 않게 찍어주세요."
     )
 
+
     private var guideline_curr_view: Int = 0
     private var permission_request_code: Int = 1
     // no use -> 대체: MyApplication.is_guideline_disable
@@ -41,11 +43,41 @@ class SnapActivity : AppCompatActivity() {
 
     private var camera_intent = Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA)
     private var camera_actionistener = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        Log.d("Camera", "take a picture!")
-        var add_intent = Intent(this, ImageAddActivity::class.java)
+        if (it.resultCode == RESULT_CANCELED) {
+            var builder = AlertDialog.Builder(this)
+            builder.setTitle("메뉴 선택")
+            builder.setMessage("선택할 사진이 추가될 메뉴를 고르세요.")
+            builder.setPositiveButton(
+                "MyOutfits", {
+                        dialogInterface: DialogInterface?, i -> Int
+                    var intent = Intent(this, MyOutfitsActivity::class.java)
+                    intent.putExtra("snap", "from snap activity")
+                    startActivity(intent)
+                }
+            )
+            builder.setNegativeButton(
+                "MyWardRobe", {
+                        dialogInterface: DialogInterface?, i -> Int
+                    var intent = Intent(this, MyWardrobeActivity::class.java)
+                    intent.putExtra("snap", "from snap activity")
+                    startActivity(intent)
+                }
+            )
+            builder.setNeutralButton(
+                "cancel", {
+                        dialogInterface: DialogInterface?, i -> Int
+                    //cancel
+                }
+            )
+            builder.setCancelable(false)
+            builder.show()
 
-        startActivityForResult(add_intent, 10)
-        finish()
+        }
+
+//        var add_intent = Intent(this, ImageAddActivity::class.java)
+//
+//        startActivityForResult(add_intent, 10)
+        //finish()
     }
 
     lateinit var binding: ActivitySnapBinding
@@ -119,8 +151,6 @@ class SnapActivity : AppCompatActivity() {
             camera_actionistener.launch(camera_intent)
         }
     }
-
-
 
     private fun setUpActionBar(){
         setSupportActionBar(tb_snap)
