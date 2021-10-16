@@ -7,6 +7,7 @@
     android:orientation="vertical"
     android:background="@color/panton_yellow"
     tools:context=".activity.MyPageActivity">
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/tb_mypage"
         android:layout_width="match_parent"
@@ -20,57 +21,90 @@
         </TextView>
     </androidx.appcompat.widget.Toolbar>
 
-    <ImageView
-        android:id="@+id/mypage_img_profile"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:visibility="visible"
-        tools:srcCompat="@tools:sample/avatars" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:orientation="vertical"
+        android:background="@color/panton_grey">
 
-    <TextView
-        android:id="@+id/mypage_txt_name"
-        android:layout_width="150dp"
-        android:layout_height="20dp"
-        android:layout_margin="5dp"
-        android:background="@color/panton_grey"
-        android:textColor="@color/white"
-        android:text="name"
-        android:visibility="visible" />
+        <ImageButton
+            android:id="@+id/mypage_imgbtn_profile"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:padding="0dp"
+            android:layout_margin="10dp"
+            android:scaleType="centerCrop"
+            tools:srcCompat="@tools:sample/avatars" />
 
-    <TextView
-        android:id="@+id/mypage_txt_ID"
-        android:layout_width="200dp"
-        android:layout_height="20dp"
-        android:layout_margin="0dp"
-        android:background="@color/panton_grey"
-        android:text="ID: "
-        android:textColor="@color/white"
-        android:translationX="175dp"
-        android:translationY="-175dp"
-        android:visibility="visible" />
+        <EditText
+            android:id="@+id/mypage_et_name"
+            android:layout_width="150dp"
+            android:layout_height="20dp"
+            android:translationX="10dp"
+            android:gravity="center"
+            android:background="@color/panton_yellow"
+            android:textColor="@color/panton_grey"
+            android:text="name: "
+            android:inputType="textPersonName"
+            android:enabled="false" />
 
-    <TextView
-        android:id="@+id/mypage_txt_phonenumber"
-        android:layout_width="200dp"
-        android:layout_height="20dp"
-        android:layout_margin="0dp"
-        android:background="@color/panton_grey"
-        android:text="PhoneNumber: "
-        android:textColor="@color/white"
-        android:translationX="175dp"
-        android:translationY="-150dp"
-        android:visibility="visible" />
+        <TextView
+            android:id="@+id/mypage_txt_ID"
+            android:layout_width="200dp"
+            android:layout_height="20dp"
+            android:translationX="175dp"
+            android:translationY="-180dp"
+            android:background="@color/panton_yellow"
+            android:textColor="@color/panton_grey"
+            android:text="ID: " />
 
-    <TextView
-        android:id="@+id/mypage_txt_email"
-        android:layout_width="200dp"
-        android:layout_height="20dp"
-        android:layout_margin="0dp"
-        android:background="@color/panton_grey"
-        android:text="email: "
-        android:textColor="@color/white"
-        android:translationX="175dp"
-        android:translationY="-125dp" />
+        <TextView
+            android:id="@+id/mypage_txt_phonenumber"
+            android:layout_width="200dp"
+            android:layout_height="20dp"
+            android:translationX="175dp"
+            android:translationY="-160dp"
+            android:background="@color/panton_yellow"
+            android:textColor="@color/panton_grey"
+            android:text="PhoneNumber: " />
+
+        <EditText
+            android:id="@+id/mypage_et_email"
+            android:layout_width="200dp"
+            android:layout_height="20dp"
+            android:translationX="175dp"
+            android:translationY="-140dp"
+            android:background="@color/panton_yellow"
+            android:textColor="@color/panton_grey"
+            android:text="email: "
+            android:inputType="textEmailAddress"
+            android:enabled="false" />
+
+        <EditText
+            android:id="@+id/mypage_et_password"
+            android:layout_width="200dp"
+            android:layout_height="20dp"
+            android:translationX="175dp"
+            android:translationY="-120dp"
+            android:background="@color/panton_yellow"
+            android:textColor="@color/panton_grey"
+            android:text="password"
+            android:inputType="textPassword"
+            android:enabled="false" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/mypage_btn_confirm"
+            android:layout_width="80dp"
+            android:layout_height="25dp"
+            android:translationX="235dp"
+            android:translationY="-110dp"
+            android:gravity="center"
+            android:background="@color/panton_yellow"
+            android:textColor="@color/panton_grey"
+            android:enabled="false"
+            android:visibility="gone"
+            android:text="Confirm" />
+    </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/mypage_btn_changeInformation"
@@ -79,7 +113,8 @@
         android:layout_margin="15dp"
         android:backgroundTint="@color/panton_grey"
         android:text="Change Information"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:translationY="180dp" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/mypage_btn_logout"
@@ -88,7 +123,8 @@
         android:layout_margin="15dp"
         android:backgroundTint="@color/panton_grey"
         android:text="log out"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:translationY="180dp" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/mypage_btn_deleteAccount"
@@ -97,6 +133,7 @@
         android:layout_margin="15dp"
         android:backgroundTint="@color/panton_grey"
         android:text="Delete Account"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:translationY="180dp" />
 
 </LinearLayout>
