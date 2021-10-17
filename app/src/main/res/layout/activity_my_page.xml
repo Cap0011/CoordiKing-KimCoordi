@@ -34,7 +34,7 @@
             android:padding="0dp"
             android:layout_margin="10dp"
             android:scaleType="centerCrop"
-            tools:srcCompat="@tools:sample/avatars" />
+            android:src="@drawable/ic_signup_sample" />
 
         <EditText
             android:id="@+id/mypage_et_name"
@@ -44,67 +44,76 @@
             android:gravity="center"
             android:background="@color/panton_yellow"
             android:textColor="@color/panton_grey"
+            android:autoSizeTextType="uniform"
             android:text="name: "
             android:inputType="textPersonName"
             android:enabled="false" />
 
         <TextView
-            android:id="@+id/mypage_txt_ID"
-            android:layout_width="200dp"
-            android:layout_height="20dp"
-            android:translationX="175dp"
-            android:translationY="-180dp"
-            android:background="@color/panton_yellow"
-            android:textColor="@color/panton_grey"
-            android:text="ID: " />
-
-        <TextView
-            android:id="@+id/mypage_txt_phonenumber"
-            android:layout_width="200dp"
+            android:id="@+id/mypage_txt_email"
+            android:layout_width="220dp"
             android:layout_height="20dp"
             android:translationX="175dp"
             android:translationY="-160dp"
             android:background="@color/panton_yellow"
             android:textColor="@color/panton_grey"
-            android:text="PhoneNumber: " />
+            android:autoSizeTextType="uniform"
+            android:text="email: " />
 
         <EditText
-            android:id="@+id/mypage_et_email"
-            android:layout_width="200dp"
+            android:id="@+id/mypage_et_password"
+            android:layout_width="220dp"
             android:layout_height="20dp"
             android:translationX="175dp"
             android:translationY="-140dp"
             android:background="@color/panton_yellow"
             android:textColor="@color/panton_grey"
-            android:text="email: "
-            android:inputType="textEmailAddress"
+            android:autoSizeTextType="uniform"
+            android:text="password"
+            android:inputType="textPassword"
             android:enabled="false" />
 
         <EditText
-            android:id="@+id/mypage_et_password"
-            android:layout_width="200dp"
+            android:id="@+id/mypage_et_newPassword"
+            android:layout_width="220dp"
             android:layout_height="20dp"
             android:translationX="175dp"
             android:translationY="-120dp"
             android:background="@color/panton_yellow"
             android:textColor="@color/panton_grey"
-            android:text="password"
+            android:autoSizeTextType="uniform"
+            android:text=""
             android:inputType="textPassword"
-            android:enabled="false" />
+            android:enabled="false"
+            android:visibility="gone" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/mypage_btn_confirm"
-            android:layout_width="80dp"
-            android:layout_height="25dp"
-            android:translationX="235dp"
-            android:translationY="-110dp"
-            android:gravity="center"
+        <EditText
+            android:id="@+id/mypage_et_newPasswordAgain"
+            android:layout_width="220dp"
+            android:layout_height="20dp"
+            android:translationX="175dp"
+            android:translationY="-100dp"
             android:background="@color/panton_yellow"
             android:textColor="@color/panton_grey"
+            android:autoSizeTextType="uniform"
+            android:text=""
+            android:inputType="textPassword"
             android:enabled="false"
-            android:visibility="gone"
-            android:text="Confirm" />
+            android:visibility="gone" />
     </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/mypage_btn_confirm"
+        android:layout_width="80dp"
+        android:layout_height="25dp"
+        android:translationX="235dp"
+        android:translationY="20dp"
+        android:gravity="center"
+        android:background="@color/panton_grey"
+        android:textColor="@color/white"
+        android:enabled="false"
+        android:visibility="gone"
+        android:text="Confirm" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/mypage_btn_changeInformation"

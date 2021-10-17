@@ -5,10 +5,13 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.ktx.Firebase
 import com.team6.coordiking_kimcoordi.R
 import kotlinx.android.synthetic.main.activity_my_page.*
@@ -24,7 +27,7 @@ class MyPageActivity : AppCompatActivity() {
         setContentView(R.layout.activity_my_page)
 
         mypage_et_name.setText(curUser.displayName.toString())
-        mypage_et_email.setText("email: " + curUser.email.toString())
+        mypage_txt_email.setText("email: " + curUser.email.toString())
 
         mypage_btn_logout.setOnClickListener {
             Firebase.auth.signOut()
@@ -39,7 +42,39 @@ class MyPageActivity : AppCompatActivity() {
         }
 
         mypage_btn_confirm.setOnClickListener {
-            changeInformation()
+            val newName = mypage_et_name.text.toString()
+            val newPassword = mypage_et_newPassword.text.toString()
+            val password = mypage_et_password.text.toString()
+
+            if (password!="") {
+                val credential = EmailAuthProvider
+                    .getCredential(curUser.email.toString(), password)
+
+                if (newName!="") {
+                    curUser.reauthenticate(credential)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                changeName(newName)
+                            } else {
+                                Toast.makeText(baseContext, "Password is wrong.", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                }
+                if (newPassword!="") {
+                    curUser.reauthenticate(credential)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                changePassword(newPassword)
+                            } else {
+                                Toast.makeText(baseContext, "Password is wrong.", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                }
+            }
+            else {
+                Toast.makeText(baseContext, "Fill the password.", Toast.LENGTH_SHORT).show()
+            }
+
             setChangeInformation()
         }
 
@@ -63,44 +98,64 @@ class MyPageActivity : AppCompatActivity() {
     }
 
     private fun setChangeInformation() {
-        if (canChangeInformation) {
-            mypage_et_name.setText(curUser.displayName.toString())
-            mypage_et_email.setText("email: " + curUser.email.toString())
-            mypage_et_password.setText("password")
-        }
-        else {
-            mypage_et_name.setText("")
-            mypage_et_email.setText("")
-            mypage_et_password.setText("")
-        }
         canChangeInformation = !canChangeInformation
 
+        if (canChangeInformation) {
+            mypage_et_name.setText("")
+            mypage_et_password.setText("")
+            mypage_et_name.setHint("Enter a new name.")
+            mypage_et_password.setHint("Enter a current password.")
+            mypage_et_newPassword.setHint("Enter a new password.")
+            mypage_et_newPasswordAgain.setHint("Enter a new password again.")
+            mypage_btn_changeInformation.setText("Cancel")
+        }
+        else {
+            mypage_et_name.setText(curUser.displayName.toString())
+            mypage_et_password.setText("password")
+            mypage_et_name.setHint("")
+            mypage_et_password.setHint("")
+            mypage_et_newPassword.setHint("")
+            mypage_et_newPasswordAgain.setHint("")
+            mypage_btn_changeInformation.setText("Change Information")
+        }
+
         mypage_et_name.isEnabled = canChangeInformation
-        mypage_et_email.isEnabled = canChangeInformation
         mypage_et_password.isEnabled = canChangeInformation
+        mypage_et_newPassword.isEnabled = canChangeInformation
+        mypage_et_newPassword.isVisible = canChangeInformation
+        mypage_et_newPasswordAgain.isEnabled = canChangeInformation
+        mypage_et_newPasswordAgain.isVisible = canChangeInformation
         mypage_btn_confirm.isEnabled = canChangeInformation
         mypage_btn_confirm.isVisible = canChangeInformation
     }
 
-    private fun changeInformation() {
-        val newEmail = mypage_et_email.text.toString()
-        val newPassword = mypage_et_password.text.toString()
-
-        if (newEmail!="") {
-            curUser.updateEmail(newEmail)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        Toast.makeText(baseContext, "Your email has been changed.", Toast.LENGTH_SHORT).show()
-                    }
-                }
+    private fun changeName(newName: String) {
+        val profileUpdates = userProfileChangeRequest {
+            displayName = newName
+            photoUri = curUser.photoUrl
         }
-        if (newPassword!="") {
+
+        curUser.updateProfile(profileUpdates)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(baseContext, "Your name has been changed.", Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
+    private fun changePassword(newPassword: String) {
+        val newPasswordAgain = mypage_et_newPasswordAgain.text.toString()
+
+        if (newPassword == newPasswordAgain) {
             curUser.updatePassword(newPassword)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Toast.makeText(baseContext, "Your password has been changed.", Toast.LENGTH_SHORT).show()
                     }
                 }
+        }
+        else {
+            Toast.makeText(baseContext, "Passwords do not match.", Toast.LENGTH_SHORT).show()
         }
     }
 

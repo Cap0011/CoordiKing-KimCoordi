@@ -1,38 +1,88 @@
 package com.team6.coordiking_kimcoordi.activity
 
+import android.app.Activity
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.widget.SearchView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import com.team6.coordiking_kimcoordi.R
-import com.team6.coordiking_kimcoordi.adapter.*
+import com.team6.coordiking_kimcoordi.adapter.GalleryImageAdapter
+import com.team6.coordiking_kimcoordi.adapter.GalleryImageClickListener
+import com.team6.coordiking_kimcoordi.adapter.Image
+import com.team6.coordiking_kimcoordi.adapter.Outfit
+import com.team6.coordiking_kimcoordi.databinding.ActivityMyOutfitsBinding
 import com.team6.coordiking_kimcoordi.fragment.GalleryFullscreenFragment
 import kotlinx.android.synthetic.main.activity_my_outfits.*
-import kotlinx.android.synthetic.main.activity_my_wardrobe.*
-import java.util.*
-import kotlin.collections.ArrayList
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 
 class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
     private val SPAN_COUNT = 3
     private val imageList = ArrayList<Image>()
     lateinit var galleryAdapter: GalleryImageAdapter
     val database = Firebase.database.reference
+    val storage = Firebase.storage
     lateinit var user: FirebaseUser
     var myOutfit: MutableList<Outfit> = arrayListOf()
+
+    lateinit var binding: ActivityMyOutfitsBinding
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_my_outfits)
+        // init view binding
+        binding = ActivityMyOutfitsBinding.inflate(layoutInflater)
+        user = Firebase.auth.currentUser!!
+
+        setContentView(binding.root)
         setUpActionBar()
+        // load Outfit from DB
+        loadMyOutfit()
+        // init adapter
+        galleryAdapter = GalleryImageAdapter(imageList)
+        galleryAdapter.listener = this
+        // init recyclerview
+        binding.recyclerView.layoutManager = GridLayoutManager(this, SPAN_COUNT)
+        binding.recyclerView.adapter = galleryAdapter
+
+        binding.addButton.setOnClickListener{
+            // 플로팅 버튼
+            // 갤러리에서 추가
+            startActivityForResult(Intent(this,ImageAddActivity::class.java),10)
+        }
+
+        //added by 박재한
+        var intent = intent
+        var anotherdata: String? = intent.getStringExtra("snap")
+
+        if (anotherdata !== null) {
+            binding.addButton.callOnClick()
+        }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode === 10 && resultCode === Activity.RESULT_OK){
+            val dataName : String = data?.getStringExtra("dataName")!!
+            saveOutfit(user.uid, "test", 0, dataName, "test")
+            imageList.add(Image(dataName))
+            galleryAdapter.notifyDataSetChanged()
+        }
+    }
+
     private fun setUpActionBar(){
         setSupportActionBar(tb_outfit)
 
@@ -45,34 +95,6 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
         tb_outfit.setNavigationOnClickListener{ onBackPressed()}
 
         handleIntent(intent)
-
-        // init adapter
-        galleryAdapter = GalleryImageAdapter(imageList)
-        galleryAdapter.listener = this
-        // init recyclerview
-        recyclerView1.layoutManager = GridLayoutManager(this, SPAN_COUNT)
-        recyclerView1.adapter = galleryAdapter
-        // load images
-        loadImages()
-
-        user = Firebase.auth.currentUser!!
-
-        //test function(save)
-        saveTest()
-
-        loadMyOutfit()
-
-        //test function(load)
-        loadTest()
-    }
-    private fun loadImages() {
-        imageList.add(Image("https://user-images.githubusercontent.com/59128435/134841259-4d3737bd-a99f-41fb-907d-df28967a7a83.png", "sample0"))
-        imageList.add(Image("https://user-images.githubusercontent.com/59128435/134841263-cacd128e-aa15-4070-8329-5959892ca58c.png", "sample1"))
-        imageList.add(Image("https://user-images.githubusercontent.com/59128435/134841271-1679762c-061d-433d-a7b4-8ba690642a44.png", "sample2"))
-        imageList.add(Image("https://user-images.githubusercontent.com/59128435/134841273-6c34dca3-c86d-407a-b096-bdb743a3549a.png", "sample3"))
-        imageList.add(Image("https://user-images.githubusercontent.com/59128435/134841275-921f4370-8cd2-4ee5-9d84-3b66a7a3b1a9.png", "sample4"))
-
-        galleryAdapter.notifyDataSetChanged()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -103,59 +125,53 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
         galleryFragment.arguments = bundle
         galleryFragment.show(fragmentTransaction, "gallery")
     }
+
     private fun saveOutfit(uid: String, url: String, style: Int, memo: String, date: String) {
         database.child(uid).child("outfit").child(myOutfit.size.toString()).child("url").setValue(url)
         database.child(uid).child("outfit").child(myOutfit.size.toString()).child("style").setValue(style)
-        database.child(uid).child("outfit").child(myOutfit.size.toString()).child("memo").setValue(memo)
+        database.child(uid).child("outfit").child(myOutfit.size.toString()).child("name").setValue(memo)
         database.child(uid).child("outfit").child(myOutfit.size.toString()).child("date").setValue(date)
         myOutfit.add(Outfit(url, style, memo, date))
         database.child(uid).child("outfit").child("num").setValue(myOutfit.size.toString())
     }
 
     private fun loadMyOutfit(){
+        imageList.clear()
         val uid = user.uid
         database.child(uid).child("outfit").child("num").get().addOnSuccessListener {
-            var outfitNum = (it.value as String).toInt()
-            for(n in 0 until outfitNum){
-                var url: String = ""
-                var style: Int = 0
-                var memo: String = ""
-                var date: String = ""
-                database.child(uid).child("outfit").child(n.toString()).child("url").get().addOnSuccessListener {
-                    url = it.value as String
+            it.value?.let {
+                var clothesNum: Int
+                if(it is Long) clothesNum = it.toInt()
+                else clothesNum = (it as String).toInt()
+                for(n in 0 until clothesNum){
+                    CoroutineScope(Dispatchers.Main).async {
+                        //데이터베이스 불러오기 동기처리
+                        var url: String = ""
+                        var style: Int = 0
+                        var name: String = ""
+                        var date: String = ""
+                        runBlocking {
+                            database.child(uid).child("outfit").child(n.toString()).child("url").get().addOnSuccessListener{
+                                url = it.value as String
+                            }
+                            database.child(uid).child("outfit").child(n.toString()).child("style").get().addOnSuccessListener {
+                                style = (it.value as Long).toInt()
+                            }
+                            database.child(uid).child("outfit").child(n.toString()).child("name").get().addOnSuccessListener {
+                                name = it.value as String
+                            }
+                            database.child(uid).child("outfit").child(n.toString()).child("date").get().addOnSuccessListener {
+                                date = it.value as String
+                            }
+                        }.await()
+                        myOutfit.add(Outfit(url, style, name, date))
+                        imageList.add(Image(name))
+                        galleryAdapter.notifyDataSetChanged()
+                    }
                 }
-                database.child(uid).child("outfit").child(n.toString()).child("style").get().addOnSuccessListener {
-                    style = (it.value as Long).toInt()
-                }
-                database.child(uid).child("outfit").child(n.toString()).child("memo").get().addOnSuccessListener {
-                    memo = it.value as String
-                }
-                database.child(uid).child("outfit").child(n.toString()).child("date").get().addOnSuccessListener {
-                    date = it.value as String
-                }
-                myOutfit.add(Outfit(url, style, memo, date))
             }
         }.addOnFailureListener{
             Log.e("firebase", "Error getting data", it)
-        }
-    }
-
-    private fun saveTest(){
-        saveOutfit(user.uid, "url0", 0, "memo", "date")
-        saveOutfit(user.uid, "url1", 1, "memo", "date")
-        saveOutfit(user.uid, "url2", 3, "memo", "date")
-        saveOutfit(user.uid, "url3", 2, "memo", "date")
-        saveOutfit(user.uid, "url4", 0, "memo", "date")
-        saveOutfit(user.uid, "url5", 0, "memo", "date")
-        saveOutfit(user.uid, "url6", 7, "memo", "date")
-        saveOutfit(user.uid, "url7", 9, "memo", "date")
-        saveOutfit(user.uid, "url8", 2, "memo", "date")
-        saveOutfit(user.uid, "url9", 0, "memo", "date")
-    }
-
-    private fun loadTest(){
-        for (outfit in myOutfit){
-            Log.d("My Outfit", "${outfit.url}")
         }
     }
 }
