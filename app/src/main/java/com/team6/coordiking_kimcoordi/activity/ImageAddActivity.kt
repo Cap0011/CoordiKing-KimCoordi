@@ -34,7 +34,7 @@ class ImageAddActivity : AppCompatActivity() {
         //바인딩 초기화
         binding= ActivityImageAddBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        // colorSpinner init
+        // colorSpinner Init
         colorSpinner = binding.colorSpinner
         colorSpinner.adapter = ArrayAdapter.createFromResource(this,R.array.color_picker_array, android.R.layout.simple_spinner_item)
         colorSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
