@@ -15,6 +15,7 @@ class MyApplication : MultiDexApplication() {
         lateinit var db: FirebaseDatabase
         lateinit var storage: FirebaseStorage
         lateinit var user: FirebaseUser
+        var is_guideline_disable: Boolean = false // add by 박재한 (가이드라인 토글 boolean)
     }
 
     override fun onCreate() {
@@ -23,6 +24,6 @@ class MyApplication : MultiDexApplication() {
 
         db= FirebaseDatabase.getInstance()
         storage= Firebase.storage
-        user = Firebase.auth.currentUser!!
+        if(Firebase.auth.currentUser != null) user = Firebase.auth.currentUser!!
     }
 }

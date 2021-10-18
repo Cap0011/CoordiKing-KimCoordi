@@ -1,4 +1,4 @@
-package com.team6.coordiking_kimcoordi.activity
+  package com.team6.coordiking_kimcoordi.activity
 
 import android.app.Activity
 import android.app.SearchManager
@@ -16,10 +16,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.team6.coordiking_kimcoordi.R
-import com.team6.coordiking_kimcoordi.adapter.Clothes
-import com.team6.coordiking_kimcoordi.adapter.GalleryImageAdapter
-import com.team6.coordiking_kimcoordi.adapter.GalleryImageClickListener
-import com.team6.coordiking_kimcoordi.adapter.Image
+import com.team6.coordiking_kimcoordi.adapter.*
 import com.team6.coordiking_kimcoordi.databinding.ActivityMyWardrobeBinding
 import com.team6.coordiking_kimcoordi.fragment.GalleryFullscreenFragment
 import kotlinx.android.synthetic.main.activity_my_wardrobe.*
@@ -39,9 +36,9 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
     val storage = Firebase.storage
     lateinit var user: FirebaseUser
     var myWardrobe: MutableList<Clothes> = arrayListOf()
+    var myWardrobeTagList: MutableList<WardrobeTag> = arrayListOf()
 
     lateinit var binding: ActivityMyWardrobeBinding
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,11 +62,20 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
             // 갤러리에서 추가
             startActivityForResult(Intent(this,ImageAddActivity::class.java),10)
         }
+
+        //added by 박재한
+        var intent = intent
+        var anotherdata: String? = intent.getStringExtra("snap")
+
+        if (anotherdata !== null) {
+            binding.addButton.callOnClick()
+        }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode === 10 && resultCode === Activity.RESULT_OK){
+        if(requestCode === 10 && resultCode === RESULT_OK){
             val dataName : String = data?.getStringExtra("dataName")!!
             val dataColor : Int = data?.getIntExtra("dataColor",0)!!
             val dataType : Int = data?.getIntExtra("dataType",0)!!
@@ -101,11 +107,12 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
         if (Intent.ACTION_SEARCH == intent.action) {
             val query = intent.getStringExtra(SearchManager.QUERY)
             //use the query to search your data
+
         }
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.options_menu, menu)
-        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        val searchManager = getSystemService(SEARCH_SERVICE) as SearchManager
         (menu.findItem(R.id.search).actionView as SearchView).apply {
             setSearchableInfo(searchManager.getSearchableInfo(componentName))
         }
@@ -141,7 +148,9 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
         val uid = user.uid
         database.child(uid).child("wardrobe").child("num").get().addOnSuccessListener {
             it.value?.let {
-                var clothesNum = (it as String).toInt()
+                var clothesNum: Int
+                if(it is Long) clothesNum = it.toInt()
+                else clothesNum = (it as String).toInt()
                 for(n in 0 until clothesNum){
                     CoroutineScope(Dispatchers.Main).async {
                         //데이터베이스 불러오기 동기처리

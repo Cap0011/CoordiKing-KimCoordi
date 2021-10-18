@@ -1,12 +1,16 @@
 package com.team6.coordiking_kimcoordi.activity
 
+import android.content.ContentValues.TAG
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.team6.coordiking_kimcoordi.R
@@ -59,6 +63,17 @@ class SignUpActivity : AppCompatActivity() {
                     val user = auth.currentUser
                     Toast.makeText(baseContext, "Success to sign up!", Toast.LENGTH_SHORT).show()
                     updateUI(user)
+                    val profileUpdates = userProfileChangeRequest {
+                        displayName = name
+                    }
+
+                    user!!.updateProfile(profileUpdates)
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    Log.d(TAG, "User profile updated.")
+                                }
+                            }
+
                 } else {
                     // If sign up fails, display a message to the user.
                     Toast.makeText(baseContext, task.exception?.localizedMessage, Toast.LENGTH_SHORT).show()
