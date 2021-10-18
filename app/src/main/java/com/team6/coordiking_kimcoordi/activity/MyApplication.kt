@@ -1,6 +1,8 @@
 package com.team6.coordiking_kimcoordi.activity
 
+import android.content.Intent
 import android.util.Log
+import android.widget.Toast
 import androidx.multidex.MultiDexApplication
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -22,9 +24,9 @@ class MyApplication : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
         auth =  Firebase.auth
-
-        db= FirebaseDatabase.getInstance()
-        storage= Firebase.storage
+        db = FirebaseDatabase.getInstance()
+        storage = Firebase.storage
         user = Firebase.auth.currentUser!!
+
     }
 }
