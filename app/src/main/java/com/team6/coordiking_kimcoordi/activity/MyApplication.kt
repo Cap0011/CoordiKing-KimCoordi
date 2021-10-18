@@ -23,6 +23,6 @@ class MyApplication : MultiDexApplication() {
 
         db= FirebaseDatabase.getInstance()
         storage= Firebase.storage
-        user = Firebase.auth.currentUser!!
+        if(Firebase.auth.currentUser != null) user = Firebase.auth.currentUser!!
     }
 }
