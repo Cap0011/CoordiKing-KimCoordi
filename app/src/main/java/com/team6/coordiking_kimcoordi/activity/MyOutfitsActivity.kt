@@ -63,6 +63,14 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
             // 갤러리에서 추가
             startActivityForResult(Intent(this,ImageAddActivity::class.java),10)
         }
+
+        //added by 박재한
+        var intent = intent
+        var anotherdata: String? = intent.getStringExtra("snap")
+
+        if (anotherdata !== null) {
+            binding.addButton.callOnClick()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
@@ -108,7 +116,6 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
         }
         return true
     }
-
     override fun onClick(adapterPosition: Int) {
         val bundle = Bundle()
         bundle.putSerializable("images", imageList)
