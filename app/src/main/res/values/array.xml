@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="color_picker_array">
+        <item>Black</item>
+        <item>White</item>
+    </string-array>
+    <string-array name="type_picker_array">
+        <item>Type1</item>
+        <item>Type2</item>
+    </string-array>
+</resources>

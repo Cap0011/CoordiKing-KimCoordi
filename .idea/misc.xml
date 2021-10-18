@@ -5,6 +5,7 @@
       <map>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         <entry key="..\:/Users/PARK/Documents/mju/2021_mju 3-2/Team/Project/CoordiKing-KimCoordi/app/src/main/res/layout/activity_simulator.xml" value="0.23641304347826086" />
       </map>
     </option>
@@ -12,6 +13,9 @@
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
 =======
         <entry key="app/src/main/res/layout/activity_image_add.xml" value="0.55" />
+=======
+        <entry key="app/src/main/res/layout/activity_image_add.xml" value="0.375" />
+>>>>>>> 18c4cf9c1edfc945962cce09a39020a9c1d888c6
         <entry key="app/src/main/res/layout/activity_my_outfits.xml" value="0.3953125" />
         <entry key="app/src/main/res/layout/activity_my_wardrobe.xml" value="0.45" />
 =======
@@ -26,7 +30,11 @@
         <entry key="app/src/main/res/layout/activity_simulator.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/activity_snap.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.3098958333333333" />
+<<<<<<< HEAD
 >>>>>>> 07df7b6593044cfca66b77a6cee2fcfc1ffe951f
+=======
+>>>>>>> 14e0da7ad16f142b6f2a2358e116bc60a603f414
+>>>>>>> 18c4cf9c1edfc945962cce09a39020a9c1d888c6
         <entry key="app/src/main/res/layout/content_image_add.xml" value="0.5635416666666667" />
         <entry key="app/src/main/res/layout/fragment_gallery_fullscreen.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/image_fullscreen.xml" value="0.3098958333333333" />

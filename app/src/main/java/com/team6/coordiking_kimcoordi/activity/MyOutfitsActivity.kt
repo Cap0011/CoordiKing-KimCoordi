@@ -28,6 +28,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
+import java.util.*
+import kotlin.collections.ArrayList
 
 class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
     private val SPAN_COUNT = 3
@@ -77,7 +79,7 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode === 10 && resultCode === Activity.RESULT_OK){
             val dataName : String = data?.getStringExtra("dataName")!!
-            saveOutfit(user.uid, "test", 0, dataName, "test")
+            saveOutfit(user.uid, "test", 0, dataName)
             imageList.add(Image(dataName))
             galleryAdapter.notifyDataSetChanged()
         }
@@ -126,7 +128,11 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
         galleryFragment.show(fragmentTransaction, "gallery")
     }
 
-    private fun saveOutfit(uid: String, url: String, style: Int, memo: String, date: String) {
+    private fun saveOutfit(uid: String, url: String, style: Int, memo: String) {
+        // 임시
+        val currentTime = Calendar.getInstance().time
+        val date = currentTime.toString()
+        //
         database.child(uid).child("outfit").child(myOutfit.size.toString()).child("url").setValue(url)
         database.child(uid).child("outfit").child(myOutfit.size.toString()).child("style").setValue(style)
         database.child(uid).child("outfit").child(myOutfit.size.toString()).child("name").setValue(memo)
