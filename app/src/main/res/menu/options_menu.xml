@@ -6,4 +6,15 @@
         android:icon="@drawable/ic_search"
         app:showAsAction="collapseActionView|ifRoom"
         app:actionViewClass="android.widget.SearchView" />
+    <group>
+        <item
+            android:id="@+id/sort_name"
+            android:title="Name"/>
+        <item
+            android:id="@+id/sort_date"
+            android:title="Date"/>
+        <item
+            android:id="@+id/sort_color"
+            android:title="Color"/>
+    </group>
 </menu>
