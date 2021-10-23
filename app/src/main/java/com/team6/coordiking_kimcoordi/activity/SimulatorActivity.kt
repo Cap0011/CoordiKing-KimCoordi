@@ -1,36 +1,80 @@
 package com.team6.coordiking_kimcoordi.activity
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import com.bumptech.glide.Glide
+import com.google.firebase.ktx.Firebase
 import com.team6.coordiking_kimcoordi.R
-import com.team6.coordiking_kimcoordi.fragment.GalleryFullscreenFragment
+import com.team6.coordiking_kimcoordi.adapter.Image
+import com.team6.coordiking_kimcoordi.databinding.ActivitySimulatorBinding
+import com.team6.coordiking_kimcoordi.fragment.MyWardrobeFragment
 import kotlinx.android.synthetic.main.activity_simulator.*
+import kotlinx.android.synthetic.main.image_fullscreen.view.*
 
-class SimulatorActivity : AppCompatActivity() {
+// , MyOutfitsFragment.onDataPassListener
+class SimulatorActivity : AppCompatActivity(), MyWardrobeFragment.OnFragmentInteractionListener {
+
+    // 추가
+    lateinit var binding: ActivitySimulatorBinding
+    private var imageList = ArrayList<Image>()
+    private var selectedPosition: Int = 0
+    private var clickButton = -1
+    private val ISJACKET = 1
+    private val ISTOP = 2
+    private val ISBOTTOM = 3
+
+    override fun onFragmentInteraction(bundle: Bundle) {
+        imageList = bundle?.getSerializable("images") as ArrayList<Image>
+        selectedPosition = bundle?.getInt("position")
+        val image = imageList.get(selectedPosition)
+
+        //storage 이미지 다운로드
+        val imgRef= MyApplication.storage
+            .reference
+            .child("${MyApplication.user.uid}/${image.title}.png").downloadUrl.addOnSuccessListener {
+                // load image
+                when (clickButton){
+                    ISJACKET -> Glide.with(this).load(it).into(iv_Jacket)
+                    ISTOP -> Glide.with(this).load(it).into(iv_Top)
+                    ISBOTTOM -> Glide.with(this).load(it).into(iv_Bottom)
+                }
+            }.addOnCanceledListener {
+                Log.d("kim","failed to download")
+            }
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_simulator)
         setUpActionBar()
 
+        binding = ActivitySimulatorBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+
+
         btn_Jacket.setOnClickListener {
-            //iv_Jacket.setImageResource(R.drawable.image4)
-            val intent = Intent(this, MyWardrobeActivity::class.java)
-            intent.putExtra("SimulatorActivity", 1)
-            intent.putExtra("image", "iv_jacket")
-            startActivity(intent)
+            clickButton = ISJACKET
+            var transaciton = supportFragmentManager.beginTransaction()
+                .add(R.id.framelayout, MyWardrobeFragment())
+                .commit()
         }
 
         btn_Top.setOnClickListener {
-            iv_Top.setImageResource(R.drawable.image3)
-            Toast.makeText(this@SimulatorActivity, "사진이 변경되었습니다.", Toast.LENGTH_SHORT).show()
+            clickButton = ISTOP
+            var transaciton = supportFragmentManager.beginTransaction()
+                .add(R.id.framelayout, MyWardrobeFragment())
+                .commit()
         }
 
         btn_Bottom.setOnClickListener {
-            iv_Bottom.setImageResource(R.drawable.image1)
-            Toast.makeText(this@SimulatorActivity, "사진이 변경되었습니다.", Toast.LENGTH_SHORT).show()
+            clickButton = ISBOTTOM
+            var transaciton = supportFragmentManager.beginTransaction()
+                .add(R.id.framelayout, MyWardrobeFragment())
+                .commit()
         }
 
     }
@@ -45,4 +89,5 @@ class SimulatorActivity : AppCompatActivity() {
 
         tb_simulator.setNavigationOnClickListener{ onBackPressed()}
     }
+
 }

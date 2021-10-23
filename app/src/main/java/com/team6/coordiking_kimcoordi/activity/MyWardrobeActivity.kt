@@ -1,4 +1,4 @@
-  package com.team6.coordiking_kimcoordi.activity
+package com.team6.coordiking_kimcoordi.activity
 
 import android.app.SearchManager
 import android.content.Intent
@@ -119,22 +119,13 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
     }
 
     override fun onClick(adapterPosition: Int) {
-        // 수정
-        if (intent.hasExtra("SimulatorActivity")) {
-            val intent = Intent(this, SimulatorActivity::class.java)
-            intent.putExtra("good", "good")
-            Toast.makeText(this, "okay", Toast.LENGTH_SHORT).show()
-            finish()
-
-        }else {
-            val bundle = Bundle()
-            bundle.putSerializable("images", imageList)
-            bundle.putInt("position", adapterPosition)
-            val fragmentTransaction = supportFragmentManager.beginTransaction()
-            val galleryFragment = GalleryFullscreenFragment()
-            galleryFragment.arguments = bundle
-            galleryFragment.show(fragmentTransaction, "gallery")
-        }
+        val bundle = Bundle()
+        bundle.putSerializable("images", imageList)
+        bundle.putInt("position", adapterPosition)
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        val galleryFragment = GalleryFullscreenFragment()
+        galleryFragment.arguments = bundle
+        galleryFragment.show(fragmentTransaction, "gallery")
     }
 
     private fun saveClothes(uid: String, url: String, type: Int, colour: Int, name: String) {
@@ -156,7 +147,8 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
         val uid = user.uid
         database.child(uid).child("wardrobe").child("num").get().addOnSuccessListener {
             it.value?.let {
-                var clothesNum: Int
+                // 수정 -> 원본   var clothesNum: Int
+                var clothesNum: Int?
                 if(it is Long) clothesNum = it.toInt()
                 else clothesNum = (it as String).toInt()
                 for(n in 0 until clothesNum){
@@ -184,7 +176,7 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
                                 date = it.value as String
                             }
                         }.await()
-                        myWardrobe.add(Clothes(url, type, colour, name,date))
+                        myWardrobe.add(Clothes(url, type, colour, name, date))
                         imageList.add(Image(name))
                         galleryAdapter.notifyDataSetChanged()
                     }
