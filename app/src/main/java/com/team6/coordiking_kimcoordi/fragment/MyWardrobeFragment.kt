@@ -91,47 +91,52 @@ class MyWardrobeFragment : Fragment(), GalleryImageClickListener {
     }
 
 
-    private fun loadMyWardrobe(){
+    private fun loadMyWardrobe() {
         imageList.clear()
         val uid = user.uid
         database.child(uid).child("wardrobe").child("num").get().addOnSuccessListener {
             it.value?.let {
                 // 수정 -> 원본   var clothesNum: Int
                 var clothesNum: Int?
-                if(it is Long) clothesNum = it.toInt()
+                if (it is Long) clothesNum = it.toInt()
                 else clothesNum = (it as String).toInt()
-                for(n in 0 until clothesNum){
+                for (n in 0 until clothesNum) {
                     CoroutineScope(Dispatchers.Main).async {
                         //데이터베이스 불러오기 동기처리
-                        var url:String = ""
+                        var url: String = ""
                         var type: Int = 0
                         var colour: Int = 0
                         var name: String = ""
                         var date: String = ""
                         runBlocking {
-                            database.child(uid).child("wardrobe").child(n.toString()).child("url").get().addOnSuccessListener{
+                            database.child(uid).child("wardrobe").child(n.toString()).child("url")
+                                .get().addOnSuccessListener {
                                 url = it.value as String
                             }
-                            database.child(uid).child("wardrobe").child(n.toString()).child("type").get().addOnSuccessListener {
+                            database.child(uid).child("wardrobe").child(n.toString()).child("type")
+                                .get().addOnSuccessListener {
                                 type = (it.value as Long).toInt()
                             }
-                            database.child(uid).child("wardrobe").child(n.toString()).child("colour").get().addOnSuccessListener {
+                            database.child(uid).child("wardrobe").child(n.toString())
+                                .child("colour").get().addOnSuccessListener {
                                 colour = (it.value as Long).toInt()
                             }
-                            database.child(uid).child("wardrobe").child(n.toString()).child("name").get().addOnSuccessListener {
+                            database.child(uid).child("wardrobe").child(n.toString()).child("name")
+                                .get().addOnSuccessListener {
                                 name = it.value as String
                             }
-                            database.child(uid).child("wardrobe").child(n.toString()).child("date").get().addOnSuccessListener {
+                            database.child(uid).child("wardrobe").child(n.toString()).child("date")
+                                .get().addOnSuccessListener {
                                 date = it.value as String
                             }
                         }.await()
                         myWardrobe.add(Clothes(url, type, colour, name, date))
-                        imageList.add(Image(name))
+                        imageList.add(Image(name, colour, type, date))
                         galleryAdapter.notifyDataSetChanged()
                     }
                 }
             }
-        }.addOnFailureListener{
+        }.addOnFailureListener {
             Log.e("firebase", "Error getting data", it)
         }
     }

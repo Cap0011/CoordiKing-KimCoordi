@@ -192,13 +192,8 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
                                 date = it.value as String
                             }
                         }.await()
-<<<<<<< HEAD
-                        myWardrobe.add(Clothes(url, type, colour, name, date))
-                        imageList.add(Image(name))
-=======
                         myWardrobe.add(Clothes(url, type, colour, name,date))
                         imageList.add(Image(name,colour,type,date))
->>>>>>> develop
                         galleryAdapter.notifyDataSetChanged()
                     }
                 }

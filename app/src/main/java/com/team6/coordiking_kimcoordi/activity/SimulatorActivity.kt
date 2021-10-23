@@ -10,6 +10,7 @@ import com.team6.coordiking_kimcoordi.R
 import com.team6.coordiking_kimcoordi.adapter.Image
 import com.team6.coordiking_kimcoordi.databinding.ActivitySimulatorBinding
 import com.team6.coordiking_kimcoordi.fragment.MyWardrobeFragment
+import kotlinx.android.synthetic.main.activity_my_wardrobe.*
 import kotlinx.android.synthetic.main.activity_simulator.*
 import kotlinx.android.synthetic.main.image_fullscreen.view.*
 
@@ -48,13 +49,13 @@ class SimulatorActivity : AppCompatActivity(), MyWardrobeFragment.OnFragmentInte
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_simulator)
-        setUpActionBar()
 
         binding = ActivitySimulatorBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
 
+        setContentView(R.layout.activity_simulator)
+        setUpActionBar()
 
         btn_Jacket.setOnClickListener {
             clickButton = ISJACKET
@@ -88,6 +89,6 @@ class SimulatorActivity : AppCompatActivity(), MyWardrobeFragment.OnFragmentInte
         }
 
         tb_simulator.setNavigationOnClickListener{ onBackPressed()}
-    }
 
+    }
 }
