@@ -81,7 +81,7 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
         if(requestCode === 10 && resultCode === Activity.RESULT_OK){
             val dataName : String = data?.getStringExtra("dataName")!!
             saveOutfit(user.uid, "test", 0, dataName)
-            imageList.add(Image(dataName))
+            imageList.add(Image(dataName,0,0,""))
             galleryAdapter.notifyDataSetChanged()
         }
     }
@@ -173,7 +173,7 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
                             }
                         }.await()
                         myOutfit.add(Outfit(url, style, name, date))
-                        imageList.add(Image(name))
+                        imageList.add(Image(name,0,0,""))
                         galleryAdapter.notifyDataSetChanged()
                     }
                 }
