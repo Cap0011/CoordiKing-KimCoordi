@@ -1,12 +1,11 @@
   package com.team6.coordiking_kimcoordi.activity
 
-import android.app.Activity
 import android.app.SearchManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
@@ -76,11 +75,13 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode === 10 && resultCode === RESULT_OK){
+            val currentTime = Calendar.getInstance().time
+            val date = currentTime.toString()
             val dataName : String = data?.getStringExtra("dataName")!!
             val dataColor : Int = data?.getIntExtra("dataColor",0)!!
             val dataType : Int = data?.getIntExtra("dataType",0)!!
             saveClothes(user.uid, "test", dataType, dataColor, dataName)
-            imageList.add(Image(dataName))
+            imageList.add(Image(dataName,dataColor,dataType,date))
             galleryAdapter.notifyDataSetChanged()
         }
     }
@@ -117,6 +118,19 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
             setSearchableInfo(searchManager.getSearchableInfo(componentName))
         }
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId){
+            R.id.sort_name ->
+                qsort(imageList,0)
+            R.id.sort_date ->
+                qsort(imageList,1)
+            R.id.sort_color ->
+                qsort(imageList,2)
+        }
+        galleryAdapter.notifyDataSetChanged()
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onClick(adapterPosition: Int) {
@@ -177,7 +191,7 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
                             }
                         }.await()
                         myWardrobe.add(Clothes(url, type, colour, name,date))
-                        imageList.add(Image(name))
+                        imageList.add(Image(name,colour,type,date))
                         galleryAdapter.notifyDataSetChanged()
                     }
                 }
@@ -186,4 +200,99 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
             Log.e("firebase", "Error getting data", it)
         }
     }
+
+    fun qsort(array: ArrayList<Image>, sortingType: Int,left: Int = 0, right: Int = array.size - 1) {
+        var index = 0
+        when (sortingType){
+            0 ->
+                index = partition0(array, left, right)
+            1 ->
+                index = partition1(array, left, right)
+            2 ->
+                index = partition1(array, left, right)
+        }
+        if (left < index - 1) {
+            qsort(array, sortingType,left, index - 1)
+        }
+        if (index < right) {
+            qsort(array, sortingType,index, right)
+        }
+    }
+
+    fun partition0(array: ArrayList<Image>, start: Int, end: Int): Int {
+        var left = start
+        var right = end
+        val pivot = array[(left + right) / 2]
+
+        while (left <= right) {
+            while (array[left].title < pivot.title) {
+                left++
+            }
+
+            while (array[right].title > pivot.title) {
+                right--
+            }
+
+            if (left <= right) {
+                val temp = array[left]
+                array[left] = array[right]
+                array[right] = temp
+                left++
+                right--
+            }
+        }
+        return left
+    }
+
+    fun partition1(array: ArrayList<Image>, start: Int, end: Int): Int {
+        var left = start
+        var right = end
+        val pivot = array[(left + right) / 2]
+
+        while (left <= right) {
+            while (array[left].date < pivot.date) {
+                left++
+            }
+
+            while (array[right].date > pivot.date) {
+                right--
+            }
+
+            if (left <= right) {
+                val temp = array[left]
+                array[left] = array[right]
+                array[right] = temp
+                left++
+                right--
+            }
+        }
+        return left
+    }
+
+    fun partition2(array: ArrayList<Image>, start: Int, end: Int): Int {
+        var left = start
+        var right = end
+        val pivot = array[(left + right) / 2]
+
+        while (left <= right) {
+            while (array[left].color < pivot.color) {
+                left++
+            }
+
+            while (array[right].color > pivot.color) {
+                right--
+            }
+
+            if (left <= right) {
+                val temp = array[left]
+                array[left] = array[right]
+                array[right] = temp
+                left++
+                right--
+            }
+        }
+        return left
+    }
+
+
 }
