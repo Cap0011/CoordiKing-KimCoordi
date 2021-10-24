@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.firebase.auth.FirebaseUser
@@ -80,7 +81,7 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
         if(requestCode === 10 && resultCode === Activity.RESULT_OK){
             val dataName : String = data?.getStringExtra("dataName")!!
             saveOutfit(user.uid, "test", 0, dataName)
-            imageList.add(Image(dataName))
+            imageList.add(Image(dataName,0,0,""))
             galleryAdapter.notifyDataSetChanged()
         }
     }
@@ -119,6 +120,7 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
         return true
     }
     override fun onClick(adapterPosition: Int) {
+        // 원본
         val bundle = Bundle()
         bundle.putSerializable("images", imageList)
         bundle.putInt("position", adapterPosition)
@@ -171,7 +173,7 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
                             }
                         }.await()
                         myOutfit.add(Outfit(url, style, name, date))
-                        imageList.add(Image(name))
+                        imageList.add(Image(name,0,0,""))
                         galleryAdapter.notifyDataSetChanged()
                     }
                 }

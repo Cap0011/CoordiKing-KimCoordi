@@ -50,11 +50,12 @@
             android:layout_marginTop="@dimen/initial_margin_size"
             android:layout_marginEnd="@dimen/initial_margin_size"
             android:layout_marginBottom="@dimen/initial_margin_size"></androidx.recyclerview.widget.RecyclerView>
+
         <ImageView
             android:id="@+id/addImageView"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:scaleType="fitXY"/>
+            android:scaleType="fitXY" />
 
     </RelativeLayout>
 
