@@ -47,12 +47,12 @@ class MyPageActivity : AppCompatActivity() {
             }
 
             user!!.updateProfile(profileUpdates)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        updateUI()
-                        Toast.makeText(this, "Your name has been changed to ${user.displayName}", Toast.LENGTH_SHORT).show()
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            updateUI()
+                            Toast.makeText(this, "Your name has been changed to ${user.displayName}", Toast.LENGTH_SHORT).show()
+                        }
                     }
-                }
             makeNameGone()
         }
 
@@ -69,14 +69,14 @@ class MyPageActivity : AppCompatActivity() {
                 val credential = EmailAuthProvider.getCredential(email, pwd)
 
                 user.reauthenticate(credential)
-                    .addOnSuccessListener {
-                        makeCurrentPasswordGone()
-                        makeNewPasswordVisible()
-                    }
-                    .addOnFailureListener {
-                        mypage_et_currentPassword.setText("")
-                        Toast.makeText(this, "You entered wrong password!", Toast.LENGTH_SHORT).show()
-                    }
+                        .addOnSuccessListener {
+                            makeCurrentPasswordGone()
+                            makeNewPasswordVisible()
+                        }
+                        .addOnFailureListener {
+                            mypage_et_currentPassword.setText("")
+                            Toast.makeText(this, "You entered wrong password!", Toast.LENGTH_SHORT).show()
+                        }
             } else{
                 Toast.makeText(this, "Please enter your current password!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -94,15 +94,15 @@ class MyPageActivity : AppCompatActivity() {
                 val user = Firebase.auth.currentUser
 
                 user!!.updatePassword(pwd1)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            Toast.makeText(this, "Your password has been updated successfully", Toast.LENGTH_SHORT).show()
-                            isPasswordChecked = false
-                            makeNewPasswordGone()
-                        } else{
-                            Toast.makeText(this, "Your password should be at least 6 characters!", Toast.LENGTH_SHORT).show()
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                Toast.makeText(this, "Your password has been updated successfully", Toast.LENGTH_SHORT).show()
+                                isPasswordChecked = false
+                                makeNewPasswordGone()
+                            } else{
+                                Toast.makeText(this, "Your password should be at least 6 characters!", Toast.LENGTH_SHORT).show()
+                            }
                         }
-                    }
             }
         }
         setUpActionBar()

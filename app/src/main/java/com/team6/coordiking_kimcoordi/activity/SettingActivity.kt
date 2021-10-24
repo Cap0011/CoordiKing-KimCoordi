@@ -2,9 +2,6 @@ package com.team6.coordiking_kimcoordi.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.team6.coordiking_kimcoordi.R
 import kotlinx.android.synthetic.main.activity_setting.*
 
@@ -12,7 +9,6 @@ class SettingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setting)
-
         setUpActionBar()
     }
     private fun setUpActionBar(){
