@@ -1,33 +1,27 @@
 package com.team6.coordiking_kimcoordi.activity
 
-import android.app.Activity
+import android.content.ContentValues
+import android.content.ContentValues.TAG
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.ktx.Firebase
 import com.team6.coordiking_kimcoordi.R
 import kotlinx.android.synthetic.main.activity_my_page.*
-import kotlinx.android.synthetic.main.activity_setting.*
-import java.lang.Exception
 
 class MyPageActivity : AppCompatActivity() {
-    private val curUser = Firebase.auth.currentUser!!
-    private var canChangeInformation = false
-
+    var isNameChecked = false
+    var isPasswordChecked = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_page)
-
-        mypage_et_name.setText(curUser.displayName.toString())
-        mypage_txt_email.setText("email: " + curUser.email.toString())
+        updateUI()
 
         mypage_btn_logout.setOnClickListener {
             Firebase.auth.signOut()
@@ -37,54 +31,86 @@ class MyPageActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        mypage_btn_changeInformation.setOnClickListener {
-            setChangeInformation()
+        mypage_btn_change_name.setOnClickListener {
+            if(!isNameChecked) makeNameVisible()
+            else makeNameGone()
         }
-
-        mypage_btn_confirm.setOnClickListener {
-            val newName = mypage_et_name.text.toString()
-            val newPassword = mypage_et_newPassword.text.toString()
-            val password = mypage_et_password.text.toString()
-
-            if (password!="") {
-                val credential = EmailAuthProvider
-                    .getCredential(curUser.email.toString(), password)
-
-                if (newName!="") {
-                    curUser.reauthenticate(credential)
-                        .addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                changeName(newName)
-                            } else {
-                                Toast.makeText(baseContext, "Password is wrong.", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                }
-                if (newPassword!="") {
-                    curUser.reauthenticate(credential)
-                        .addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                changePassword(newPassword)
-                            } else {
-                                Toast.makeText(baseContext, "Password is wrong.", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                }
+        mypage_btn_confirm_name.setOnClickListener {
+            val str = mypage_et_name.text.toString()
+            if(str == ""){
+                Toast.makeText(this, "Please enter your new name!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
-            else {
-                Toast.makeText(baseContext, "Fill the password.", Toast.LENGTH_SHORT).show()
+            val user = Firebase.auth.currentUser
+            val profileUpdates = userProfileChangeRequest {
+                displayName = str
             }
 
-            setChangeInformation()
+            user!!.updateProfile(profileUpdates)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        updateUI()
+                        Toast.makeText(this, "Your name has been changed to ${user.displayName}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            makeNameGone()
         }
 
-        mypage_btn_deleteAccount.setOnClickListener {
-            deleteAccount()
+        mypage_btn_change_pwd.setOnClickListener {
+            makeNewPasswordGone()
+            if(!isPasswordChecked) makeCurrentPasswordVisible()
+            else makeCurrentPasswordGone()
         }
+        mypage_btn_confirm_currentPassword.setOnClickListener {
+            val pwd = mypage_et_currentPassword.text.toString()
+            if(pwd!="") {
+                val user = Firebase.auth.currentUser!!
+                val email = user.email.toString()
+                val credential = EmailAuthProvider.getCredential(email, pwd)
 
+                user.reauthenticate(credential)
+                    .addOnSuccessListener {
+                        makeCurrentPasswordGone()
+                        makeNewPasswordVisible()
+                    }
+                    .addOnFailureListener {
+                        mypage_et_currentPassword.setText("")
+                        Toast.makeText(this, "You entered wrong password!", Toast.LENGTH_SHORT).show()
+                    }
+            } else{
+                Toast.makeText(this, "Please enter your current password!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+        }
+        mypage_btn_confirm_newPassword.setOnClickListener {
+            val pwd0 = mypage_et_newPassword0.text.toString()
+            val pwd1 = mypage_et_newPassword1.text.toString()
+
+            if(pwd0 != pwd1){
+                Toast.makeText(this, "Please enter same password", Toast.LENGTH_SHORT).show()
+            } else if(pwd0 == ""){
+                Toast.makeText(this, "Please enter your new password", Toast.LENGTH_SHORT).show()
+            } else{
+                val user = Firebase.auth.currentUser
+
+                user!!.updatePassword(pwd1)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            Toast.makeText(this, "Your password has been updated successfully", Toast.LENGTH_SHORT).show()
+                            isPasswordChecked = false
+                            makeNewPasswordGone()
+                        } else{
+                            Toast.makeText(this, "Your password should be at least 6 characters!", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+            }
+        }
         setUpActionBar()
     }
-
+    private fun updateUI(){
+        mypage_tv_displayName.setText("USER NAME: "+Firebase.auth.currentUser!!.displayName)
+        mypage_tv_displayEmail.setText("EMAIL ADDRESS:\n"+Firebase.auth.currentUser!!.email)
+    }
     private fun setUpActionBar(){
         setSupportActionBar(tb_mypage)
 
@@ -96,79 +122,46 @@ class MyPageActivity : AppCompatActivity() {
 
         tb_mypage.setNavigationOnClickListener{ onBackPressed()}
     }
-
-    private fun setChangeInformation() {
-        canChangeInformation = !canChangeInformation
-
-        if (canChangeInformation) {
-            mypage_et_name.setText("")
-            mypage_et_password.setText("")
-            mypage_et_name.setHint("Enter a new name.")
-            mypage_et_password.setHint("Enter a current password.")
-            mypage_et_newPassword.setHint("Enter a new password.")
-            mypage_et_newPasswordAgain.setHint("Enter a new password again.")
-            mypage_btn_changeInformation.setText("Cancel")
-        }
-        else {
-            mypage_et_name.setText(curUser.displayName.toString())
-            mypage_et_password.setText("password")
-            mypage_et_name.setHint("")
-            mypage_et_password.setHint("")
-            mypage_et_newPassword.setHint("")
-            mypage_et_newPasswordAgain.setHint("")
-            mypage_btn_changeInformation.setText("Change Information")
-        }
-
-        mypage_et_name.isEnabled = canChangeInformation
-        mypage_et_password.isEnabled = canChangeInformation
-        mypage_et_newPassword.isEnabled = canChangeInformation
-        mypage_et_newPassword.isVisible = canChangeInformation
-        mypage_et_newPasswordAgain.isEnabled = canChangeInformation
-        mypage_et_newPasswordAgain.isVisible = canChangeInformation
-        mypage_btn_confirm.isEnabled = canChangeInformation
-        mypage_btn_confirm.isVisible = canChangeInformation
+    private fun makeNameVisible(){
+        mypage_tv_name.visibility = View.VISIBLE
+        mypage_et_name.visibility = View.VISIBLE
+        mypage_btn_confirm_name.visibility = View.VISIBLE
+        isNameChecked = !isNameChecked
     }
-
-    private fun changeName(newName: String) {
-        val profileUpdates = userProfileChangeRequest {
-            displayName = newName
-            photoUri = curUser.photoUrl
-        }
-
-        curUser.updateProfile(profileUpdates)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Toast.makeText(baseContext, "Your name has been changed.", Toast.LENGTH_SHORT).show()
-                }
-            }
+    private fun makeNameGone(){
+        mypage_tv_name.visibility = View.GONE
+        mypage_et_name.visibility = View.GONE
+        mypage_btn_confirm_name.visibility = View.GONE
+        isNameChecked = !isNameChecked
+        mypage_et_name.setText("")
     }
-
-    private fun changePassword(newPassword: String) {
-        val newPasswordAgain = mypage_et_newPasswordAgain.text.toString()
-
-        if (newPassword == newPasswordAgain) {
-            curUser.updatePassword(newPassword)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        Toast.makeText(baseContext, "Your password has been changed.", Toast.LENGTH_SHORT).show()
-                    }
-                }
-        }
-        else {
-            Toast.makeText(baseContext, "Passwords do not match.", Toast.LENGTH_SHORT).show()
-        }
+    private fun makeCurrentPasswordVisible(){
+        mypage_tv_currentPassword.visibility = View.VISIBLE
+        mypage_et_currentPassword.visibility = View.VISIBLE
+        mypage_btn_confirm_currentPassword.visibility = View.VISIBLE
+        isPasswordChecked = !isPasswordChecked
     }
-
-    private fun deleteAccount() {
-        curUser.delete()
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    Toast.makeText(baseContext, "Your account has been successfully deleted.", Toast.LENGTH_LONG).show()
-                }
-            }
-
-        val intent = Intent(applicationContext, SignInActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivity(intent)
+    private fun makeCurrentPasswordGone(){
+        mypage_tv_currentPassword.visibility = View.GONE
+        mypage_et_currentPassword.visibility = View.GONE
+        mypage_btn_confirm_currentPassword.visibility = View.GONE
+        isPasswordChecked = !isPasswordChecked
+        mypage_et_currentPassword.setText("")
+    }
+    private fun makeNewPasswordVisible(){
+        mypage_tv_newPassword0.visibility = View.VISIBLE
+        mypage_et_newPassword0.visibility = View.VISIBLE
+        mypage_tv_newPassword1.visibility = View.VISIBLE
+        mypage_et_newPassword1.visibility = View.VISIBLE
+        mypage_btn_confirm_newPassword.visibility = View.VISIBLE
+    }
+    private fun makeNewPasswordGone(){
+        mypage_tv_newPassword0.visibility = View.GONE
+        mypage_et_newPassword0.visibility = View.GONE
+        mypage_tv_newPassword1.visibility = View.GONE
+        mypage_et_newPassword1.visibility = View.GONE
+        mypage_btn_confirm_newPassword.visibility = View.GONE
+        mypage_et_newPassword0.setText("")
+        mypage_et_newPassword1.setText("")
     }
 }

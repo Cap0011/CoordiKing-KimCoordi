@@ -7,7 +7,6 @@
     android:orientation="vertical"
     android:background="@color/panton_yellow"
     tools:context=".activity.MyPageActivity">
-
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/tb_mypage"
         android:layout_width="match_parent"
@@ -20,129 +19,159 @@
             android:textColor="@color/panton_grey">
         </TextView>
     </androidx.appcompat.widget.Toolbar>
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:orientation="vertical"
-        android:background="@color/panton_grey">
-
-        <ImageButton
-            android:id="@+id/mypage_imgbtn_profile"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="15dp"
+        android:gravity="center">
+        <ImageView
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:padding="0dp"
-            android:layout_margin="10dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_signup_sample" />
-
-        <EditText
-            android:id="@+id/mypage_et_name"
-            android:layout_width="150dp"
-            android:layout_height="20dp"
-            android:translationX="10dp"
-            android:gravity="center"
-            android:background="@color/panton_yellow"
-            android:textColor="@color/panton_grey"
-            android:autoSizeTextType="uniform"
-            android:text="name: "
-            android:inputType="textPersonName"
-            android:enabled="false" />
-
-        <TextView
-            android:id="@+id/mypage_txt_email"
-            android:layout_width="220dp"
-            android:layout_height="20dp"
-            android:translationX="175dp"
-            android:translationY="-160dp"
-            android:background="@color/panton_yellow"
-            android:textColor="@color/panton_grey"
-            android:autoSizeTextType="uniform"
-            android:text="email: " />
-
-        <EditText
-            android:id="@+id/mypage_et_password"
-            android:layout_width="220dp"
-            android:layout_height="20dp"
-            android:translationX="175dp"
-            android:translationY="-140dp"
-            android:background="@color/panton_yellow"
-            android:textColor="@color/panton_grey"
-            android:autoSizeTextType="uniform"
-            android:text="password"
-            android:inputType="textPassword"
-            android:enabled="false" />
-
-        <EditText
-            android:id="@+id/mypage_et_newPassword"
-            android:layout_width="220dp"
-            android:layout_height="20dp"
-            android:translationX="175dp"
-            android:translationY="-120dp"
-            android:background="@color/panton_yellow"
-            android:textColor="@color/panton_grey"
-            android:autoSizeTextType="uniform"
-            android:text=""
-            android:inputType="textPassword"
-            android:enabled="false"
-            android:visibility="gone" />
-
-        <EditText
-            android:id="@+id/mypage_et_newPasswordAgain"
-            android:layout_width="220dp"
-            android:layout_height="20dp"
-            android:translationX="175dp"
-            android:translationY="-100dp"
-            android:background="@color/panton_yellow"
-            android:textColor="@color/panton_grey"
-            android:autoSizeTextType="uniform"
-            android:text=""
-            android:inputType="textPassword"
-            android:enabled="false"
-            android:visibility="gone" />
+            android:layout_gravity="center"
+            android:src="@drawable/ic_signup_sample"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="5dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/mypage_tv_displayName"
+                android:text="USER NAME: DUMMY"
+                android:textStyle="bold"
+                android:textColor="@color/panton_grey"
+                android:textAlignment="center"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/mypage_tv_displayEmail"
+                android:layout_marginTop="15dp"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                android:textColor="@color/panton_grey"
+                android:text="EMAIL ADDRESS: DUMMY@DUMMY.com"/>
+        </LinearLayout>
     </LinearLayout>
-
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/mypage_btn_confirm"
-        android:layout_width="80dp"
-        android:layout_height="25dp"
-        android:translationX="235dp"
-        android:translationY="20dp"
-        android:gravity="center"
-        android:background="@color/panton_grey"
-        android:textColor="@color/white"
-        android:enabled="false"
-        android:visibility="gone"
-        android:text="Confirm" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/mypage_btn_changeInformation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="15dp"
+        android:id="@+id/mypage_btn_change_name"
+        android:text="Change name"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:backgroundTint="@color/panton_grey"
-        android:text="Change Information"
-        android:textColor="@color/white"
-        android:translationY="180dp" />
-
+        android:textColor="@color/white"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mypage_tv_name"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:text="Enter a new name you want"
+        android:visibility="gone" />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mypage_et_name"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:visibility="gone"/>
     <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mypage_btn_confirm_name"
+        android:text="Confirm"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/panton_grey"
+        android:visibility="gone"/>
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mypage_btn_change_pwd"
+        android:text="Change password"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:backgroundTint="@color/panton_grey"
+        android:textColor="@color/white"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mypage_tv_currentPassword"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:text="Enter your current password"
+        android:visibility="gone" />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mypage_et_currentPassword"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:inputType="textPassword"
+        android:visibility="gone"/>
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mypage_btn_confirm_currentPassword"
+        android:text="Confirm"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/panton_grey"
+        android:visibility="gone"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mypage_tv_newPassword0"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:text="Enter your new password"
+        android:visibility="gone" />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mypage_et_newPassword0"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:inputType="textPassword"
+        android:visibility="gone"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mypage_tv_newPassword1"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:text="Enter your new password again"
+        android:visibility="gone" />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mypage_et_newPassword1"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:inputType="textPassword"
+        android:visibility="gone"/>
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mypage_btn_confirm_newPassword"
+        android:text="Confirm"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/panton_grey"
+        android:visibility="gone"/>
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/mypage_btn_logout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:backgroundTint="@color/panton_grey"
         android:text="log out"
-        android:textColor="@color/white"
-        android:translationY="180dp" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/mypage_btn_deleteAccount"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:backgroundTint="@color/panton_grey"
-        android:text="Delete Account"
-        android:textColor="@color/white"
-        android:translationY="180dp" />
-
+        android:textColor="@color/white"/>
 </LinearLayout>

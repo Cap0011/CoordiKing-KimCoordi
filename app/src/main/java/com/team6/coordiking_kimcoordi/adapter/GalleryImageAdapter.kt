@@ -1,13 +1,17 @@
 package com.team6.coordiking_kimcoordi.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.bumptech.glide.Glide
 import com.team6.coordiking_kimcoordi.R
+import com.team6.coordiking_kimcoordi.activity.SimulatorActivity
+import kotlinx.android.synthetic.main.activity_my_wardrobe.view.*
 import com.team6.coordiking_kimcoordi.activity.MyApplication
 import kotlinx.android.synthetic.main.item_gallery_image.view.*
 

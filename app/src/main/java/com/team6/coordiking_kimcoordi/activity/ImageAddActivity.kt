@@ -9,6 +9,10 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
@@ -22,12 +26,72 @@ class ImageAddActivity : AppCompatActivity() {
 //    var myWardrobe: MutableList<Clothes> = arrayListOf()
     lateinit var binding: ActivityImageAddBinding
     lateinit var bitmap: Bitmap
+    lateinit var colorSpinner: Spinner
+    lateinit var typeSpinner: Spinner
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //바인딩 초기화
         binding= ActivityImageAddBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        // colorSpinner Init
+        colorSpinner = binding.colorSpinner
+        colorSpinner.adapter = ArrayAdapter.createFromResource(this,R.array.color_picker_array, android.R.layout.simple_spinner_item)
+        colorSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                when (position) {
+                    //Black
+                    0->{
+
+                    }
+                    //White
+                    1->{
+
+                    }
+                    else -> {
+
+                    }
+                }
+            }
+        }
+        //typeSpinner innit
+        typeSpinner = binding.typeSpinner
+        typeSpinner.adapter = ArrayAdapter.createFromResource(this,R.array.type_picker_array, android.R.layout.simple_spinner_item)
+        typeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                when (position) {
+                    //type1
+                    0->{
+
+                    }
+                    //type2
+                    1->{
+
+                    }
+                    else -> {
+
+                    }
+                }
+            }
+        }
         // 갤러리 열기
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         intent.type = "image/*"
@@ -99,6 +163,8 @@ class ImageAddActivity : AppCompatActivity() {
             Log.d("aaa", "failure....."+it)
         }.addOnCompleteListener{
             intent.putExtra("dataName",binding.addEditView.text.toString())
+            intent.putExtra("dataColor",binding.colorSpinner.selectedItemPosition)
+            intent.putExtra("dataType",binding.typeSpinner.selectedItemPosition)
             setResult(RESULT_OK, intent)
             finish()
         }

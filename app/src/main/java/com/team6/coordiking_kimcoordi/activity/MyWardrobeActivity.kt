@@ -1,13 +1,13 @@
-  package com.team6.coordiking_kimcoordi.activity
+package com.team6.coordiking_kimcoordi.activity
 
-import android.app.Activity
 import android.app.SearchManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.firebase.auth.FirebaseUser
@@ -17,14 +17,16 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.team6.coordiking_kimcoordi.R
 import com.team6.coordiking_kimcoordi.adapter.*
-import com.team6.coordiking_kimcoordi.databinding.ActivityMyWardrobeBinding
 import com.team6.coordiking_kimcoordi.fragment.GalleryFullscreenFragment
 import kotlinx.android.synthetic.main.activity_my_wardrobe.*
+import com.team6.coordiking_kimcoordi.databinding.ActivityMyWardrobeBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
+import java.util.*
+import kotlin.collections.ArrayList
 
 class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
     private val SPAN_COUNT = 3
@@ -74,9 +76,13 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode === 10 && resultCode === RESULT_OK){
+            val currentTime = Calendar.getInstance().time
+            val date = currentTime.toString()
             val dataName : String = data?.getStringExtra("dataName")!!
-            saveClothes(user.uid, "test", 0, 0, dataName)
-            imageList.add(Image(dataName))
+            val dataColor : Int = data?.getIntExtra("dataColor",0)!!
+            val dataType : Int = data?.getIntExtra("dataType",0)!!
+            saveClothes(user.uid, "test", dataType, dataColor, dataName)
+            imageList.add(Image(dataName,dataColor,dataType,date))
             galleryAdapter.notifyDataSetChanged()
         }
     }
@@ -115,6 +121,19 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
         return true
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId){
+            R.id.sort_name ->
+                qsort(imageList,0)
+            R.id.sort_date ->
+                qsort(imageList,1)
+            R.id.sort_color ->
+                qsort(imageList,2)
+        }
+        galleryAdapter.notifyDataSetChanged()
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onClick(adapterPosition: Int) {
         val bundle = Bundle()
         bundle.putSerializable("images", imageList)
@@ -126,11 +145,16 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
     }
 
     private fun saveClothes(uid: String, url: String, type: Int, colour: Int, name: String) {
+        // 임시
+        val currentTime = Calendar.getInstance().time
+        val date = currentTime.toString()
+        //
         database.child(uid).child("wardrobe").child(myWardrobe.size.toString()).child("url").setValue(url)
         database.child(uid).child("wardrobe").child(myWardrobe.size.toString()).child("type").setValue(type)
         database.child(uid).child("wardrobe").child(myWardrobe.size.toString()).child("colour").setValue(colour)
         database.child(uid).child("wardrobe").child(myWardrobe.size.toString()).child("name").setValue(name)
-        myWardrobe.add(Clothes(url, type, colour, name))
+        database.child(uid).child("wardrobe").child(myWardrobe.size.toString()).child("date").setValue(date)
+        myWardrobe.add(Clothes(url, type, colour, name, date))
         database.child(uid).child("wardrobe").child("num").setValue(myWardrobe.size.toString())
     }
 
@@ -139,7 +163,8 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
         val uid = user.uid
         database.child(uid).child("wardrobe").child("num").get().addOnSuccessListener {
             it.value?.let {
-                var clothesNum: Int
+                // 수정 -> 원본   var clothesNum: Int
+                var clothesNum: Int?
                 if(it is Long) clothesNum = it.toInt()
                 else clothesNum = (it as String).toInt()
                 for(n in 0 until clothesNum){
@@ -149,6 +174,7 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
                         var type: Int = 0
                         var colour: Int = 0
                         var name: String = ""
+                        var date: String = ""
                         runBlocking {
                             database.child(uid).child("wardrobe").child(n.toString()).child("url").get().addOnSuccessListener{
                                 url = it.value as String
@@ -162,9 +188,12 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
                             database.child(uid).child("wardrobe").child(n.toString()).child("name").get().addOnSuccessListener {
                                 name = it.value as String
                             }
+                            database.child(uid).child("wardrobe").child(n.toString()).child("date").get().addOnSuccessListener {
+                                date = it.value as String
+                            }
                         }.await()
-                        myWardrobe.add(Clothes(url, type, colour, name))
-                        imageList.add(Image(name))
+                        myWardrobe.add(Clothes(url, type, colour, name,date))
+                        imageList.add(Image(name,colour,type,date))
                         galleryAdapter.notifyDataSetChanged()
                     }
                 }
@@ -173,4 +202,99 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
             Log.e("firebase", "Error getting data", it)
         }
     }
+
+    fun qsort(array: ArrayList<Image>, sortingType: Int,left: Int = 0, right: Int = array.size - 1) {
+        var index = 0
+        when (sortingType){
+            0 ->
+                index = partition0(array, left, right)
+            1 ->
+                index = partition1(array, left, right)
+            2 ->
+                index = partition1(array, left, right)
+        }
+        if (left < index - 1) {
+            qsort(array, sortingType,left, index - 1)
+        }
+        if (index < right) {
+            qsort(array, sortingType,index, right)
+        }
+    }
+
+    fun partition0(array: ArrayList<Image>, start: Int, end: Int): Int {
+        var left = start
+        var right = end
+        val pivot = array[(left + right) / 2]
+
+        while (left <= right) {
+            while (array[left].title < pivot.title) {
+                left++
+            }
+
+            while (array[right].title > pivot.title) {
+                right--
+            }
+
+            if (left <= right) {
+                val temp = array[left]
+                array[left] = array[right]
+                array[right] = temp
+                left++
+                right--
+            }
+        }
+        return left
+    }
+
+    fun partition1(array: ArrayList<Image>, start: Int, end: Int): Int {
+        var left = start
+        var right = end
+        val pivot = array[(left + right) / 2]
+
+        while (left <= right) {
+            while (array[left].date < pivot.date) {
+                left++
+            }
+
+            while (array[right].date > pivot.date) {
+                right--
+            }
+
+            if (left <= right) {
+                val temp = array[left]
+                array[left] = array[right]
+                array[right] = temp
+                left++
+                right--
+            }
+        }
+        return left
+    }
+
+    fun partition2(array: ArrayList<Image>, start: Int, end: Int): Int {
+        var left = start
+        var right = end
+        val pivot = array[(left + right) / 2]
+
+        while (left <= right) {
+            while (array[left].color < pivot.color) {
+                left++
+            }
+
+            while (array[right].color > pivot.color) {
+                right--
+            }
+
+            if (left <= right) {
+                val temp = array[left]
+                array[left] = array[right]
+                array[right] = temp
+                left++
+                right--
+            }
+        }
+        return left
+    }
+
+
 }
