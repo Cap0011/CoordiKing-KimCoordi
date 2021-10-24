@@ -105,6 +105,20 @@ class MyPageActivity : AppCompatActivity() {
                         }
             }
         }
+        mypage_btn_delete_account.setOnClickListener {
+            val user = Firebase.auth.currentUser!!
+
+            user.delete()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Toast.makeText(this, "Your account has been deleted successfully", Toast.LENGTH_SHORT).show()
+
+                        val intent = Intent(applicationContext, SignInActivity::class.java)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
+                    }
+                }
+        }
         setUpActionBar()
     }
     private fun updateUI(){

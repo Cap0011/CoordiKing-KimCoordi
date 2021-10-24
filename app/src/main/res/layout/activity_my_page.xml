@@ -174,4 +174,13 @@
         android:layout_marginRight="15dp"
         android:backgroundTint="@color/panton_grey"
         android:textColor="@color/white"/>
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mypage_btn_delete_account"
+        android:text="delete account"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:backgroundTint="@color/panton_grey"
+        android:textColor="@color/white"/>
 </LinearLayout>
