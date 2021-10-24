@@ -161,19 +161,19 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
                         var date: String = ""
                         runBlocking {
                             database.child(uid).child("wardrobe").child(n.toString()).child("url").get().addOnSuccessListener{
-                                url = it.value as String
+                                if(it!=null) url = it.value as String
                             }
                             database.child(uid).child("wardrobe").child(n.toString()).child("type").get().addOnSuccessListener {
-                                type = (it.value as Long).toInt()
+                                if(it!=null) type = (it.value as Long).toInt()
                             }
                             database.child(uid).child("wardrobe").child(n.toString()).child("colour").get().addOnSuccessListener {
-                                colour = (it.value as Long).toInt()
+                                if(it!=null) colour = (it.value as Long).toInt()
                             }
                             database.child(uid).child("wardrobe").child(n.toString()).child("name").get().addOnSuccessListener {
-                                name = it.value as String
+                                if(it!=null) name = it.value as String
                             }
                             database.child(uid).child("wardrobe").child(n.toString()).child("date").get().addOnSuccessListener {
-                                date = it.value as String
+                                if(it!=null) date = it.value as String
                             }
                         }.await()
                         myWardrobe.add(Clothes(url, type, colour, name,date))
