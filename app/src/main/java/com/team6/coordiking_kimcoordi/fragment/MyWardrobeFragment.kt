@@ -35,7 +35,7 @@ class MyWardrobeFragment : Fragment(), GalleryImageClickListener {
 
     var myWardrobe: MutableList<Clothes> = arrayListOf()
 
-
+    // Fragment에서 Activity로 데이터 전달 위함
     interface OnFragmentInteractionListener{
         fun onFragmentInteraction(bundle: Bundle)
     }
@@ -53,7 +53,7 @@ class MyWardrobeFragment : Fragment(), GalleryImageClickListener {
     }
 
 
-
+    // User의 MyWardrobe에 저장된 사진들이 보임
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // super.onCreate(savedInstanceState)
 
@@ -72,7 +72,7 @@ class MyWardrobeFragment : Fragment(), GalleryImageClickListener {
     }
 
 
-
+    // 사진을 선택하면 해당 정보를 Activity로 전달
     override fun onClick(adapterPosition: Int) {
         val bundle = Bundle()
         bundle.putSerializable("images", imageList)

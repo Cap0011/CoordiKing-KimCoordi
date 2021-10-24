@@ -3,21 +3,15 @@ package com.team6.coordiking_kimcoordi.activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import com.bumptech.glide.Glide
-import com.google.firebase.ktx.Firebase
 import com.team6.coordiking_kimcoordi.R
 import com.team6.coordiking_kimcoordi.adapter.Image
 import com.team6.coordiking_kimcoordi.databinding.ActivitySimulatorBinding
 import com.team6.coordiking_kimcoordi.fragment.MyWardrobeFragment
-import kotlinx.android.synthetic.main.activity_my_wardrobe.*
 import kotlinx.android.synthetic.main.activity_simulator.*
-import kotlinx.android.synthetic.main.image_fullscreen.view.*
 
-// , MyOutfitsFragment.onDataPassListener
 class SimulatorActivity : AppCompatActivity(), MyWardrobeFragment.OnFragmentInteractionListener {
 
-    // 추가
     lateinit var binding: ActivitySimulatorBinding
     private var imageList = ArrayList<Image>()
     private var selectedPosition: Int = 0
@@ -26,6 +20,7 @@ class SimulatorActivity : AppCompatActivity(), MyWardrobeFragment.OnFragmentInte
     private val ISTOP = 2
     private val ISBOTTOM = 3
 
+    // MyWardrobeFragment에서 이미지 데이터를 받기
     override fun onFragmentInteraction(bundle: Bundle) {
         imageList = bundle?.getSerializable("images") as ArrayList<Image>
         selectedPosition = bundle?.getInt("position")
@@ -42,7 +37,7 @@ class SimulatorActivity : AppCompatActivity(), MyWardrobeFragment.OnFragmentInte
                     ISBOTTOM -> Glide.with(this).load(it).into(iv_Bottom)
                 }
             }.addOnCanceledListener {
-                Log.d("kim","failed to download")
+                Log.d("SimulatorActivity","failed to download")
             }
 
     }
