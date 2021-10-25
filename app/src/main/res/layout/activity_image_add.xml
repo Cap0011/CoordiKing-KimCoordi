@@ -22,7 +22,7 @@
         android:ems="14"
         android:gravity="left|center"
         android:inputType="textPersonName"
-        android:text="Name"
+        android:hint="Name"
         android:textColor="@color/panton_grey" />
     <Spinner
         android:id="@+id/colorSpinner"

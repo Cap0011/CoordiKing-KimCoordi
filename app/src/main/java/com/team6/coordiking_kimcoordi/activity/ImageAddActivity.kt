@@ -134,7 +134,7 @@ class ImageAddActivity : AppCompatActivity() {
         if(item.itemId === R.id.menu_add_save){
             if(binding.addImageView.drawable !== null && binding.addEditView.text.isNotEmpty()){
                 // 이미지 storage 업로드
-                uploadImage(MyApplication.user.uid, binding.addEditView.text.toString())
+                uploadImage(MyApplication.user!!.uid, binding.addEditView.text.toString())
                 Toast.makeText(this, "데이터가 저장되었습니다", Toast.LENGTH_SHORT).show()
             }else {
                 Toast.makeText(this, "데이터가 모두 입력되지 않았습니다.", Toast.LENGTH_SHORT).show()

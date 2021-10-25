@@ -29,7 +29,7 @@ class SimulatorActivity : AppCompatActivity(), MyWardrobeFragment.OnFragmentInte
         //storage 이미지 다운로드
         val imgRef= MyApplication.storage
             .reference
-            .child("${MyApplication.user.uid}/${image.title}.png").downloadUrl.addOnSuccessListener {
+            .child("${MyApplication.user!!.uid}/${image.title}.png").downloadUrl.addOnSuccessListener {
                 // load image
                 when (clickButton){
                     ISJACKET -> Glide.with(this).load(it).into(iv_Jacket)

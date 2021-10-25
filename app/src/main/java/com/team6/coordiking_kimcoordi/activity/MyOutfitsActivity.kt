@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -17,10 +18,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.team6.coordiking_kimcoordi.R
-import com.team6.coordiking_kimcoordi.adapter.GalleryImageAdapter
-import com.team6.coordiking_kimcoordi.adapter.GalleryImageClickListener
-import com.team6.coordiking_kimcoordi.adapter.Image
-import com.team6.coordiking_kimcoordi.adapter.Outfit
+import com.team6.coordiking_kimcoordi.adapter.*
 import com.team6.coordiking_kimcoordi.databinding.ActivityMyOutfitsBinding
 import com.team6.coordiking_kimcoordi.fragment.GalleryFullscreenFragment
 import kotlinx.android.synthetic.main.activity_my_outfits.*
@@ -35,14 +33,50 @@ import kotlin.collections.ArrayList
 class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
     private val SPAN_COUNT = 3
     private val imageList = ArrayList<Image>()
+    private var imageListBackUp = ArrayList<Image>()
     lateinit var galleryAdapter: GalleryImageAdapter
     val database = Firebase.database.reference
     val storage = Firebase.storage
     lateinit var user: FirebaseUser
     var myOutfit: MutableList<Outfit> = arrayListOf()
+    var myOutfitTagList: MutableList<OutfitTag> = arrayListOf()
+
+    var colourArr = arrayOf(
+        "black", "white", "yellow", "green", "blue", "navy", "purple",
+        "red", "orange", "grey"
+    )
+    var styleArr = arrayOf("jacket", "top", "bottom")
+    private val monthArr = hashMapOf(
+        "Jan" to 1,
+        "Feb" to 2,
+        "Mar" to 3,
+        "Apr" to 4,
+        "May" to 5,
+        "Jun" to 6,
+        "Jul" to 7,
+        "Aug" to 8,
+        "Sep" to 9,
+        "Oct" to 10,
+        "Nov" to 11,
+        "Dec" to 12
+    )
+    private val tagList = hashMapOf(
+        "black" to 0,
+        "white" to 1,
+        "yellow" to 2,
+        "green" to 3,
+        "blue" to 4,
+        "navy" to 5,
+        "purple" to 6,
+        "red" to 7,
+        "orange" to 8,
+        "grey" to 9,
+        "jacket" to 10,
+        "top" to 11,
+        "bottom" to 12
+    )
 
     lateinit var binding: ActivityMyOutfitsBinding
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,29 +130,40 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
         }
 
         tb_outfit.setNavigationOnClickListener{ onBackPressed()}
-
-        handleIntent(intent)
     }
 
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        handleIntent(intent)
-    }
-
-    private fun handleIntent(intent: Intent) {
-        if (Intent.ACTION_SEARCH == intent.action) {
-            val query = intent.getStringExtra(SearchManager.QUERY)
-            //use the query to search your data
-        }
-    }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.options_menu, menu)
-        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        (menu.findItem(R.id.search).actionView as SearchView).apply {
-            setSearchableInfo(searchManager.getSearchableInfo(componentName))
-        }
+        val searchView = menu.findItem(R.id.search).actionView as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            override fun onQueryTextChange(newText: String?): Boolean {
+                Log.d("da","text change")
+                return true
+            }
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                Log.d("da","text submit")
+                searchTag(query)
+                return false
+            }
+        })
         return true
     }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId){
+            R.id.sort_name ->
+                Log.d("Hazzen", "name")
+                //qsort(imageList, 0)
+            R.id.sort_date ->
+                Log.d("Hazzen", "date")
+                //qsort(imageList, 1)
+            R.id.sort_color ->
+                qsort(imageList, 2)
+        }
+        galleryAdapter.notifyDataSetChanged()
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onClick(adapterPosition: Int) {
         // 원본
         val bundle = Bundle()
@@ -175,11 +220,146 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
                         myOutfit.add(Outfit(url, style, name, date))
                         imageList.add(Image(name,0,0,""))
                         galleryAdapter.notifyDataSetChanged()
+                        //set TagList
+                        myOutfitTagList.add(n, OutfitTag())
+                        myOutfitTagList[n].setIdxTrue(tagList[styleArr[style]]!!)
+                        myOutfitTagList[n].setIdxTrue(tagList[colourArr[5]]!!) //colour 추가
                     }
                 }
             }
         }.addOnFailureListener{
             Log.e("firebase", "Error getting data", it)
         }
+    }
+    fun qsort(array: ArrayList<Image>, sortingType: Int, left: Int = 0, right: Int = array.size - 1) {
+        var index = 0
+        when (sortingType){
+            0 ->
+                //Name
+                index = partitionbyName(array, left, right)
+            1 ->
+                //Date
+                index = partitionbyDate(array, left, right)
+            2 ->
+                //Colour
+                index = partitionbyColour(array, left, right)
+        }
+        if (left < index - 1) {
+            qsort(array, sortingType, left, index - 1)
+        }
+        if (index < right) {
+            qsort(array, sortingType, index, right)
+        }
+    }
+
+    fun partitionbyName(array: ArrayList<Image>, start: Int, end: Int): Int {
+        var left = start
+        var right = end
+        val pivot = array[(left + right) / 2]
+
+        while (left <= right) {
+            while (array[left].title < pivot.title) {
+                left++
+            }
+
+            while (array[right].title > pivot.title) {
+                right--
+            }
+
+            if (left <= right) {
+                val temp = array[left]
+                array[left] = array[right]
+                array[right] = temp
+                left++
+                right--
+            }
+        }
+        return left
+    }
+
+    fun partitionbyDate(array: ArrayList<Image>, start: Int, end: Int): Int {
+        var left = start
+        var right = end
+        val pivot = array[(left + right) / 2]
+
+        while (left <= right) {
+            while (convertDate(array[left].date) < convertDate(pivot.date)) {
+                left++
+            }
+
+            while (convertDate(array[right].date) > convertDate(pivot.date)) {
+                right--
+            }
+
+            if (left <= right) {
+                val temp = array[left]
+                array[left] = array[right]
+                array[right] = temp
+                left++
+                right--
+            }
+        }
+        return left
+    }
+
+    fun convertDate(str: String): String{
+        var token = str.split(' ')
+
+        val year = token[5]
+        val month = monthArr[token[1]].toString()
+        val day = token[2]
+        var time = token[3].split(':')
+        var hour = time[0]
+        var minute = time[1]
+        var second = time[2]
+
+        return year+month+day+hour+minute+second
+    }
+    fun partitionbyColour(array: ArrayList<Image>, start: Int, end: Int): Int {
+        var left = start
+        var right = end
+        val pivot = array[(left + right) / 2]
+
+        while (left <= right) {
+            while (array[left].color < pivot.color) {
+                left++
+            }
+
+            while (array[right].color > pivot.color) {
+                right--
+            }
+
+            if (left <= right) {
+                val temp = array[left]
+                array[left] = array[right]
+                array[right] = temp
+                left++
+                right--
+            }
+        }
+        return left
+    }
+
+    private fun searchTag(tag: String?){
+        if(tag==""){
+            Toast.makeText(this, "Please enter the tag you want to look up", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val code = tagList[tag] ?: return
+        if(imageListBackUp.size == 0){
+            imageListBackUp.addAll(imageList)
+        }
+        else{
+            imageList.clear()
+            imageList.addAll(imageListBackUp)
+        }
+        var cnt = 0
+        for(n in 0 until myOutfit.size){
+            if(!myOutfitTagList[n].tag[code!!]){
+                imageList.removeAt(n - cnt)
+                cnt++
+            }
+        }
+        galleryAdapter.notifyDataSetChanged()
     }
 }

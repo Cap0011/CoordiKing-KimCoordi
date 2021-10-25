@@ -45,7 +45,7 @@ class GalleryImageAdapter(private val itemList: List<Image>): RecyclerView.Adapt
             //storage 이미지 다운로드
             val imgRef= MyApplication.storage
                 .reference
-                .child("${MyApplication.user.uid}/${image.title}.png").downloadUrl.addOnSuccessListener {  }.addOnSuccessListener {
+                .child("${MyApplication.user!!.uid}/${image.title}.png").downloadUrl.addOnSuccessListener {  }.addOnSuccessListener {
                     // load image
                     Glide.with(context!!).load(it).into(itemView.ivGalleryImage)
                 }.addOnCanceledListener {
