@@ -1,4 +1,4 @@
-  package com.team6.coordiking_kimcoordi.activity
+package com.team6.coordiking_kimcoordi.activity
 
 import android.app.SearchManager
 import android.content.Intent
@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.firebase.auth.FirebaseUser
@@ -16,9 +17,9 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.team6.coordiking_kimcoordi.R
 import com.team6.coordiking_kimcoordi.adapter.*
-import com.team6.coordiking_kimcoordi.databinding.ActivityMyWardrobeBinding
 import com.team6.coordiking_kimcoordi.fragment.GalleryFullscreenFragment
 import kotlinx.android.synthetic.main.activity_my_wardrobe.*
+import com.team6.coordiking_kimcoordi.databinding.ActivityMyWardrobeBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -162,7 +163,8 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
         val uid = user.uid
         database.child(uid).child("wardrobe").child("num").get().addOnSuccessListener {
             it.value?.let {
-                var clothesNum: Int
+                // 수정 -> 원본   var clothesNum: Int
+                var clothesNum: Int?
                 if(it is Long) clothesNum = it.toInt()
                 else clothesNum = (it as String).toInt()
                 for(n in 0 until clothesNum){
