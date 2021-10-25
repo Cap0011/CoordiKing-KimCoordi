@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="color_picker_array">
-        <item>Black</item>
-        <item>White</item>
+        <item>Red</item>
+        <item>Orange</item>
         <item>Yellow</item>
         <item>Green</item>
         <item>Blue</item>
         <item>Navy</item>
         <item>Purple</item>
-        <item>Red</item>
-        <item>Orange</item>
+        <item>Black</item>
+        <item>White</item>
         <item>Grey</item>
     </string-array>
     <string-array name="type_picker_array">
         <item>Jacket</item>
         <item>Top</item>
-        <item>Bottom</item>
+        <item>Bottoms</item>
     </string-array>
 </resources>
