@@ -209,7 +209,7 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
             1 ->
                 index = partition1(array, left, right)
             2 ->
-                index = partition1(array, left, right)
+                index = partition2(array, left, right)
         }
         if (left < index - 1) {
             qsort(array, sortingType,left, index - 1)
