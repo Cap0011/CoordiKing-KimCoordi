@@ -83,9 +83,9 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
             val date = currentTime.toString()
             val dataName : String = data?.getStringExtra("dataName")!!
             val dataColor : Int = data?.getIntExtra("dataColor",0)!!
-            val dataType : Int = data?.getIntExtra("dataType",0)!!
-            saveOutfit(user.uid, "test", 0, dataName)
-            imageList.add(Image(dataName,dataColor,dataType,date))
+            val dataStyle : Int = data?.getIntExtra("dataType",0)!!
+            saveOutfit(user.uid, "test", dataStyle, dataName)
+            imageList.add(Image(dataName,dataColor,dataStyle,date))
             galleryAdapter.notifyDataSetChanged()
         }
     }
@@ -100,28 +100,26 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
         }
 
         tb_outfit.setNavigationOnClickListener{ onBackPressed()}
-
-        handleIntent(intent)
-    }
-
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        handleIntent(intent)
-    }
-
-    private fun handleIntent(intent: Intent) {
-        if (Intent.ACTION_SEARCH == intent.action) {
-            val query = intent.getStringExtra(SearchManager.QUERY)
-            //use the query to search your data
-        }
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.options_menu, menu)
-        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        (menu.findItem(R.id.search).actionView as SearchView).apply {
-            setSearchableInfo(searchManager.getSearchableInfo(componentName))
-        }
+        val searchView = menu.findItem(R.id.search).actionView as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            override fun onQueryTextChange(newText: String?): Boolean {
+                Log.d("da","text change")
+                return true
+            }
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                Log.d("da","text submit")
+                searchTag(query)
+                return false
+            }
+        })
         return true
+    }
+
+    private fun searchTag(tag: String?) {
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

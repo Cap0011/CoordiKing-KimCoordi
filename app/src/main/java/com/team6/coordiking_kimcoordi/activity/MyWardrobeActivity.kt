@@ -37,8 +37,8 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
     var myWardrobeTagList: MutableList<WardrobeTag> = arrayListOf()
 
     var colourArr = arrayOf(
-        "black", "white", "yellow", "green", "blue", "navy", "purple",
-        "red", "orange", "grey"
+        "red", "orange", "yellow", "green", "blue", "navy", "purple",
+        "black", "white", "grey"
     )
     var typeArr = arrayOf("jacket", "top", "bottom")
     private val monthArr = hashMapOf(
@@ -56,15 +56,15 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
         "Dec" to 12
     )
     private val tagList = hashMapOf(
-        "black" to 0,
-        "white" to 1,
+        "red" to 0,
+        "orange" to 1,
         "yellow" to 2,
         "green" to 3,
         "blue" to 4,
         "navy" to 5,
         "purple" to 6,
-        "red" to 7,
-        "orange" to 8,
+        "black" to 7,
+        "white" to 8,
         "grey" to 9,
         "jacket" to 10,
         "top" to 11,
