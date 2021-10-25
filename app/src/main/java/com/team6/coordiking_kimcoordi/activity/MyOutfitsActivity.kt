@@ -132,6 +132,8 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
                 qsort(imageList,1)
             R.id.sort_color ->
                 qsort(imageList,2)
+            R.id.sort_type ->
+                qsort(imageList,3)
         }
         galleryAdapter.notifyDataSetChanged()
         return super.onOptionsItemSelected(item)
@@ -210,6 +212,8 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
                 index = partition1(array, left, right)
             2 ->
                 index = partition2(array, left, right)
+            3 ->
+                index = partition3(array, left, right)
         }
         if (left < index - 1) {
             qsort(array, sortingType,left, index - 1)
@@ -280,6 +284,31 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
             }
 
             while (array[right].color > pivot.color) {
+                right--
+            }
+
+            if (left <= right) {
+                val temp = array[left]
+                array[left] = array[right]
+                array[right] = temp
+                left++
+                right--
+            }
+        }
+        return left
+    }
+
+    fun partition3(array: ArrayList<Image>, start: Int, end: Int): Int {
+        var left = start
+        var right = end
+        val pivot = array[(left + right) / 2]
+
+        while (left <= right) {
+            while (array[left].type < pivot.type) {
+                left++
+            }
+
+            while (array[right].type > pivot.type) {
                 right--
             }
 

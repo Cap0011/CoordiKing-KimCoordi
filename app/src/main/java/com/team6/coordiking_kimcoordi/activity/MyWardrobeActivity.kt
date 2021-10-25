@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.SearchView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.firebase.auth.FirebaseUser
@@ -17,9 +16,9 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.team6.coordiking_kimcoordi.R
 import com.team6.coordiking_kimcoordi.adapter.*
+import com.team6.coordiking_kimcoordi.databinding.ActivityMyWardrobeBinding
 import com.team6.coordiking_kimcoordi.fragment.GalleryFullscreenFragment
 import kotlinx.android.synthetic.main.activity_my_wardrobe.*
-import com.team6.coordiking_kimcoordi.databinding.ActivityMyWardrobeBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -129,6 +128,8 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
                 qsort(imageList,1)
             R.id.sort_color ->
                 qsort(imageList,2)
+            R.id.sort_type ->
+                qsort(imageList,3)
         }
         galleryAdapter.notifyDataSetChanged()
         return super.onOptionsItemSelected(item)
@@ -169,8 +170,8 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
                 else clothesNum = (it as String).toInt()
                 for(n in 0 until clothesNum){
                     CoroutineScope(Dispatchers.Main).async {
-                        //데이터베이스 불러오기 동기처리
-                        var url:String = ""
+                        //데이터베이스 불러오기 비동기처리(병렬)
+                       var url:String = ""
                         var type: Int = 0
                         var colour: Int = 0
                         var name: String = ""
@@ -212,6 +213,8 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
                 index = partition1(array, left, right)
             2 ->
                 index = partition2(array, left, right)
+            3 ->
+                index = partition3(array, left, right)
         }
         if (left < index - 1) {
             qsort(array, sortingType,left, index - 1)
@@ -296,5 +299,28 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
         return left
     }
 
+    fun partition3(array: ArrayList<Image>, start: Int, end: Int): Int {
+        var left = start
+        var right = end
+        val pivot = array[(left + right) / 2]
 
+        while (left <= right) {
+            while (array[left].type < pivot.type) {
+                left++
+            }
+
+            while (array[right].type > pivot.type) {
+                right--
+            }
+
+            if (left <= right) {
+                val temp = array[left]
+                array[left] = array[right]
+                array[right] = temp
+                left++
+                right--
+            }
+        }
+        return left
+    }
 }
