@@ -66,7 +66,7 @@ class GalleryFullscreenFragment: DialogFragment() {
             //storage 이미지 다운로드
             val imgRef= MyApplication.storage
                 .reference
-                .child("${MyApplication.user.uid}/${image.title}.png").downloadUrl.addOnSuccessListener {
+                .child("${MyApplication.user!!.uid}/${image.title}.png").downloadUrl.addOnSuccessListener {
                     // load image
                     Glide.with(context!!).load(it).into(view.ivFullscreenImage)
                 }.addOnCanceledListener {

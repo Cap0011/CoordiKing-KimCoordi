@@ -1,6 +1,5 @@
 package com.team6.coordiking_kimcoordi.activity
-
-import android.app.SearchManager
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -17,26 +16,63 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.team6.coordiking_kimcoordi.R
 import com.team6.coordiking_kimcoordi.adapter.*
+import com.team6.coordiking_kimcoordi.databinding.ActivityMyWardrobeBinding
 import com.team6.coordiking_kimcoordi.fragment.GalleryFullscreenFragment
 import kotlinx.android.synthetic.main.activity_my_wardrobe.*
-import com.team6.coordiking_kimcoordi.databinding.ActivityMyWardrobeBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.*
 import java.util.*
 import kotlin.collections.ArrayList
 
 class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
     private val SPAN_COUNT = 3
-    private val imageList = ArrayList<Image>()
+    private var imageList = ArrayList<Image>()
+    private var imageListBackUp = ArrayList<Image>()
     lateinit var galleryAdapter: GalleryImageAdapter
     val database = Firebase.database.reference
     val storage = Firebase.storage
     lateinit var user: FirebaseUser
     var myWardrobe: MutableList<Clothes> = arrayListOf()
     var myWardrobeTagList: MutableList<WardrobeTag> = arrayListOf()
+
+    var colourArr = arrayOf(
+        "red", "orange", "yellow", "green", "blue", "navy", "purple",
+        "black", "white", "grey"
+    )
+    var typeArr = arrayOf("jacket", "top", "bottom")
+    private val monthArr = hashMapOf(
+        "Jan" to 1,
+        "Feb" to 2,
+        "Mar" to 3,
+        "Apr" to 4,
+        "May" to 5,
+        "Jun" to 6,
+        "Jul" to 7,
+        "Aug" to 8,
+        "Sep" to 9,
+        "Oct" to 10,
+        "Nov" to 11,
+        "Dec" to 12
+    )
+    private val tagList = hashMapOf(
+        "red" to 0,
+        "orange" to 1,
+        "yellow" to 2,
+        "green" to 3,
+        "blue" to 4,
+        "navy" to 5,
+        "purple" to 6,
+        "black" to 7,
+        "white" to 8,
+        "grey" to 9,
+        "jacket" to 10,
+        "top" to 11,
+        "bottom" to 12
+    )
 
     lateinit var binding: ActivityMyWardrobeBinding
 
@@ -60,7 +96,7 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
         binding.addButton.setOnClickListener{
             // 플로팅 버튼
             // 갤러리에서 추가
-            startActivityForResult(Intent(this,ImageAddActivity::class.java),10)
+            startActivityForResult(Intent(this, ImageAddActivity::class.java), 10)
         }
 
         //added by 박재한
@@ -70,20 +106,20 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
         if (anotherdata !== null) {
             binding.addButton.callOnClick()
         }
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode === 10 && resultCode === RESULT_OK){
+        if(requestCode === 10 && resultCode === Activity.RESULT_OK){
             val currentTime = Calendar.getInstance().time
             val date = currentTime.toString()
             val dataName : String = data?.getStringExtra("dataName")!!
-            val dataColor : Int = data?.getIntExtra("dataColor",0)!!
-            val dataType : Int = data?.getIntExtra("dataType",0)!!
+            val dataColor : Int = data?.getIntExtra("dataColor", 0)!!
+            val dataType : Int = data?.getIntExtra("dataType", 0)!!
             saveClothes(user.uid, "test", dataType, dataColor, dataName)
-            imageList.add(Image(dataName,dataColor,dataType,date))
+            imageList.add(Image(dataName, dataColor, dataType, date))
             galleryAdapter.notifyDataSetChanged()
+            Log.d("Responsibility", "onActivityResult")
         }
     }
 
@@ -97,40 +133,44 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
         }
 
         tb_wardrobe.setNavigationOnClickListener{ onBackPressed()}
-
-        handleIntent(intent)
-    }
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        handleIntent(intent)
     }
 
-    private fun handleIntent(intent: Intent) {
-        if (Intent.ACTION_SEARCH == intent.action) {
-            val query = intent.getStringExtra(SearchManager.QUERY)
-            //use the query to search your data
-
-        }
-    }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.options_menu, menu)
-        val searchManager = getSystemService(SEARCH_SERVICE) as SearchManager
-        (menu.findItem(R.id.search).actionView as SearchView).apply {
-            setSearchableInfo(searchManager.getSearchableInfo(componentName))
-        }
+        val searchView = menu.findItem(R.id.search).actionView as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            override fun onQueryTextChange(newText: String?): Boolean {
+                Log.d("da","text change")
+                return true
+            }
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                Log.d("da","text submit")
+                searchTag(query)
+                return false
+            }
+        })
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
-            R.id.sort_name ->
-                qsort(imageList,0)
-            R.id.sort_date ->
-                qsort(imageList,1)
-            R.id.sort_color ->
-                qsort(imageList,2)
+            R.id.sort_name -> {
+                qsort(imageList, 0)
+                galleryAdapter.notifyDataSetChanged()
+            }
+            R.id.sort_date -> {
+                qsort(imageList, 1)
+                galleryAdapter.notifyDataSetChanged()
+            }
+            R.id.sort_color -> {
+                qsort(imageList, 2)
+                galleryAdapter.notifyDataSetChanged()
+            }
+            R.id.sort_type -> {
+                qsort(imageList, 3)
+                galleryAdapter.notifyDataSetChanged()
+            }
         }
-        galleryAdapter.notifyDataSetChanged()
         return super.onOptionsItemSelected(item)
     }
 
@@ -159,6 +199,7 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
     }
 
     private fun loadMyWardrobe(){
+        Log.d("Responsibility", "loadmyWardrobe")
         imageList.clear()
         val uid = user.uid
         database.child(uid).child("wardrobe").child("num").get().addOnSuccessListener {
@@ -169,32 +210,36 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
                 else clothesNum = (it as String).toInt()
                 for(n in 0 until clothesNum){
                     CoroutineScope(Dispatchers.Main).async {
-                        //데이터베이스 불러오기 동기처리
-                        var url:String = ""
+                        //데이터베이스 불러오기 비동기처리(병렬)
+                       var url:String = ""
                         var type: Int = 0
                         var colour: Int = 0
                         var name: String = ""
                         var date: String = ""
                         runBlocking {
                             database.child(uid).child("wardrobe").child(n.toString()).child("url").get().addOnSuccessListener{
-                                url = it.value as String
+                                if(it!=null) url = it.value as String
                             }
                             database.child(uid).child("wardrobe").child(n.toString()).child("type").get().addOnSuccessListener {
-                                type = (it.value as Long).toInt()
+                                if(it!=null) type = (it.value as Long).toInt()
                             }
                             database.child(uid).child("wardrobe").child(n.toString()).child("colour").get().addOnSuccessListener {
-                                colour = (it.value as Long).toInt()
+                                if(it!=null) colour = (it.value as Long).toInt()
                             }
                             database.child(uid).child("wardrobe").child(n.toString()).child("name").get().addOnSuccessListener {
-                                name = it.value as String
+                                if(it!=null) name = it.value as String
                             }
                             database.child(uid).child("wardrobe").child(n.toString()).child("date").get().addOnSuccessListener {
-                                date = it.value as String
+                                if(it!=null) date = it.value as String
                             }
                         }.await()
-                        myWardrobe.add(Clothes(url, type, colour, name,date))
-                        imageList.add(Image(name,colour,type,date))
+                        myWardrobe.add(Clothes(url, type, colour, name, date))
+                        imageList.add(Image(name, colour, type, date))
                         galleryAdapter.notifyDataSetChanged()
+                        //set TagList
+                        myWardrobeTagList.add(n, WardrobeTag())
+                        myWardrobeTagList[n].setIdxTrue(tagList[typeArr[type]]!!)
+                        myWardrobeTagList[n].setIdxTrue(tagList[colourArr[colour]]!!)
                     }
                 }
             }
@@ -203,25 +248,31 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
         }
     }
 
-    fun qsort(array: ArrayList<Image>, sortingType: Int,left: Int = 0, right: Int = array.size - 1) {
+    fun qsort(array: ArrayList<Image>, sortingType: Int, left: Int = 0, right: Int = array.size - 1) {
         var index = 0
         when (sortingType){
             0 ->
-                index = partition0(array, left, right)
+                //Name
+                index = partitionbyName(array, left, right)
             1 ->
-                index = partition1(array, left, right)
+                //Date
+                index = partitionbyDate(array, left, right)
             2 ->
-                index = partition1(array, left, right)
+                //Colour
+                index = partitionbyColour(array, left, right)
+            3 ->
+                //Type
+                index = partitionbyType(array, left, right)
         }
         if (left < index - 1) {
-            qsort(array, sortingType,left, index - 1)
+            qsort(array, sortingType, left, index - 1)
         }
         if (index < right) {
-            qsort(array, sortingType,index, right)
+            qsort(array, sortingType, index, right)
         }
     }
 
-    fun partition0(array: ArrayList<Image>, start: Int, end: Int): Int {
+    fun partitionbyName(array: ArrayList<Image>, start: Int, end: Int): Int {
         var left = start
         var right = end
         val pivot = array[(left + right) / 2]
@@ -246,17 +297,17 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
         return left
     }
 
-    fun partition1(array: ArrayList<Image>, start: Int, end: Int): Int {
+    fun partitionbyDate(array: ArrayList<Image>, start: Int, end: Int): Int {
         var left = start
         var right = end
         val pivot = array[(left + right) / 2]
 
         while (left <= right) {
-            while (array[left].date < pivot.date) {
+            while (convertDate(array[left].date) < convertDate(pivot.date)) {
                 left++
             }
 
-            while (array[right].date > pivot.date) {
+            while (convertDate(array[right].date) > convertDate(pivot.date)) {
                 right--
             }
 
@@ -271,7 +322,20 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
         return left
     }
 
-    fun partition2(array: ArrayList<Image>, start: Int, end: Int): Int {
+    fun convertDate(str: String): String{
+        var token = str.split(' ')
+
+        val year = token[5]
+        val month = monthArr[token[1]].toString()
+        val day = token[2]
+        var time = token[3].split(':')
+        var hour = time[0]
+        var minute = time[1]
+        var second = time[2]
+
+        return year+month+day+hour+minute+second
+    }
+    fun partitionbyColour(array: ArrayList<Image>, start: Int, end: Int): Int {
         var left = start
         var right = end
         val pivot = array[(left + right) / 2]
@@ -295,6 +359,51 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
         }
         return left
     }
+    fun partitionbyType(array: ArrayList<Image>, start: Int, end: Int): Int {
+        var left = start
+        var right = end
+        val pivot = array[(left + right) / 2]
 
+        while (left <= right) {
+            while (array[left].type < pivot.type) {
+                left++
+            }
 
+            while (array[right].type > pivot.type) {
+                right--
+            }
+
+            if (left <= right) {
+                val temp = array[left]
+                array[left] = array[right]
+                array[right] = temp
+                left++
+                right--
+            }
+        }
+        return left
+    }
+    private fun searchTag(tag: String?){
+        if(tag==""){
+            Toast.makeText(this, "Please enter the tag you want to look up", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val code = tagList[tag] ?: return
+        if(imageListBackUp.size == 0){
+            imageListBackUp.addAll(imageList)
+        }
+        else{
+            imageList.clear()
+            imageList.addAll(imageListBackUp)
+        }
+        var cnt = 0
+        for(n in 0 until myWardrobe.size){
+            if(!myWardrobeTagList[n].tag[code!!]){
+                imageList.removeAt(n - cnt)
+                cnt++
+            }
+        }
+        galleryAdapter.notifyDataSetChanged()
+        Log.d("Responsibility", "searchTag")
+    }
 }
