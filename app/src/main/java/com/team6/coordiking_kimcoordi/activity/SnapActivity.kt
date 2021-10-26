@@ -26,12 +26,11 @@ class SnapActivity : AppCompatActivity() {
     private val DISABLE_TEXT: String = "카메라 사용 가이드라인을 다시 보시려면\n설정-가이드라인에서 다시 가이드라인 보기를 켜 주세요."
     private val NOTIFY_TEXT: String = "우리는 사진을 찍을 때 직관적이고 명확하게 애플리케이션을 사용할 수 있게 사진을 찍는 가이드라인을 제공하고 있습니다. 가이드라인을 한 번 읽고 사용해주세요."
     private val GUIDELINE_TEXT = arrayOf(
-        "가이드라인 1번입니다. ~하게 찍어주세요.",
-        "가이드라인 2번입니다. ~ 하세요.",
-        "가이드라인 3번입니다. 가능한 밝은 곳에서 찍어주세요.",
-        "마지막 페이지입니다. 옷 일부분이 잘리지 않게 찍어주세요."
+        "너무 어둡거나 너무 밝은 곳은 피해 주세요!",
+        "옷의 전체 형태가 화면 안에 들어오게 찍어 주세요!",
+        "옷이 구겨지지 않게 잘 편 후 찍어 주세요!",
+        "정방형으로 찍기를 권장 드려요!"
     )
-
 
     private var guideline_curr_view: Int = 0
     private var permission_request_code: Int = 1
@@ -39,7 +38,7 @@ class SnapActivity : AppCompatActivity() {
     //private var is_disable: Boolean = false
     private var disable_alert_flag: Boolean = false
     //guideline view test
-    private var image_list: Array<Int> = arrayOf(R.drawable.image0, R.drawable.image1, R.drawable.image2, R.drawable.image3)
+    private var image_list: Array<Int> = arrayOf(R.drawable.guide0, R.drawable.guide1, R.drawable.guide2, R.drawable.guide3)
 
     private var camera_intent = Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA)
     private var camera_actionistener = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {

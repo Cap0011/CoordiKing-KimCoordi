@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.firebase.auth.FirebaseUser
@@ -17,10 +18,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.team6.coordiking_kimcoordi.R
-import com.team6.coordiking_kimcoordi.adapter.GalleryImageAdapter
-import com.team6.coordiking_kimcoordi.adapter.GalleryImageClickListener
-import com.team6.coordiking_kimcoordi.adapter.Image
-import com.team6.coordiking_kimcoordi.adapter.Outfit
+import com.team6.coordiking_kimcoordi.adapter.*
 import com.team6.coordiking_kimcoordi.databinding.ActivityMyOutfitsBinding
 import com.team6.coordiking_kimcoordi.fragment.GalleryFullscreenFragment
 import kotlinx.android.synthetic.main.activity_my_outfits.*
@@ -35,14 +33,49 @@ import kotlin.collections.ArrayList
 class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
     private val SPAN_COUNT = 3
     private val imageList = ArrayList<Image>()
+    private var imageListBackUp = ArrayList<Image>()
     lateinit var galleryAdapter: GalleryImageAdapter
     val database = Firebase.database.reference
     val storage = Firebase.storage
     lateinit var user: FirebaseUser
     var myOutfit: MutableList<Outfit> = arrayListOf()
-
+    var myOutfitTagList: MutableList<OutfitTag> = arrayListOf()
     lateinit var binding: ActivityMyOutfitsBinding
 
+    var colourArr = arrayOf(
+            "red", "orange", "yellow", "green", "blue", "navy", "purple",
+            "black", "white", "grey"
+    )
+    var typeArr = arrayOf("jacket", "top", "bottom")
+    private val monthArr = hashMapOf(
+            "Jan" to 1,
+            "Feb" to 2,
+            "Mar" to 3,
+            "Apr" to 4,
+            "May" to 5,
+            "Jun" to 6,
+            "Jul" to 7,
+            "Aug" to 8,
+            "Sep" to 9,
+            "Oct" to 10,
+            "Nov" to 11,
+            "Dec" to 12
+    )
+    private val tagList = hashMapOf(
+            "red" to 0,
+            "orange" to 1,
+            "yellow" to 2,
+            "green" to 3,
+            "blue" to 4,
+            "navy" to 5,
+            "purple" to 6,
+            "black" to 7,
+            "white" to 8,
+            "grey" to 9,
+            "jacket" to 10,
+            "top" to 11,
+            "bottom" to 12
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -119,21 +152,48 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
     }
 
     private fun searchTag(tag: String?) {
-
+        if(tag==""){
+            Toast.makeText(this, "Please enter the tag you want to look up", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val code = tagList[tag] ?: return
+        if(imageListBackUp.size == 0){
+            imageListBackUp.addAll(imageList)
+        }
+        else{
+            imageList.clear()
+            imageList.addAll(imageListBackUp)
+        }
+        var cnt = 0
+        for(n in 0 until myOutfit.size){
+            if(!myOutfitTagList[n].tag[code!!]){
+                imageList.removeAt(n - cnt)
+                cnt++
+            }
+        }
+        galleryAdapter.notifyDataSetChanged()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
-            R.id.sort_name ->
-                qsort(imageList,0)
-            R.id.sort_date ->
-                qsort(imageList,1)
-            R.id.sort_color ->
-                qsort(imageList,2)
-            R.id.sort_type ->
-                qsort(imageList,3)
+            R.id.sort_name -> {
+                qsort(imageList, 0)
+                galleryAdapter.notifyDataSetChanged()
+            }
+            R.id.sort_date -> {
+                qsort(imageList, 1)
+                galleryAdapter.notifyDataSetChanged()
+            }
+            R.id.sort_color -> {
+                qsort(imageList, 2)
+                galleryAdapter.notifyDataSetChanged()
+            }
+            R.id.sort_type -> {
+                qsort(imageList, 3)
+                galleryAdapter.notifyDataSetChanged()
+            }
         }
-        galleryAdapter.notifyDataSetChanged()
+
         return super.onOptionsItemSelected(item)
     }
 
@@ -191,8 +251,12 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
                             }
                         }.await()
                         myOutfit.add(Outfit(url, style, name, date))
-                        imageList.add(Image(name,0,0,""))
+                        imageList.add(Image(name,0, style,""))
                         galleryAdapter.notifyDataSetChanged()
+                        //set TagList
+                        myOutfitTagList.add(n, OutfitTag())
+                        myOutfitTagList[n].setIdxTrue(tagList[typeArr[style]]!!)
+                        myOutfitTagList[n].setIdxTrue(tagList[colourArr[0]]!!)
                     }
                 }
             }
@@ -205,13 +269,13 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
         var index = 0
         when (sortingType){
             0 ->
-                index = partition0(array, left, right)
+                index = partitionbyName(array, left, right)
             1 ->
-                index = partition1(array, left, right)
+                index = partitionbyDate(array, left, right)
             2 ->
-                index = partition2(array, left, right)
+                index = partitionbyColour(array, left, right)
             3 ->
-                index = partition3(array, left, right)
+                index = partitionbyStyle(array, left, right)
         }
         if (left < index - 1) {
             qsort(array, sortingType,left, index - 1)
@@ -221,7 +285,7 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
         }
     }
 
-    fun partition0(array: ArrayList<Image>, start: Int, end: Int): Int {
+    fun partitionbyName(array: ArrayList<Image>, start: Int, end: Int): Int {
         var left = start
         var right = end
         val pivot = array[(left + right) / 2]
@@ -246,17 +310,17 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
         return left
     }
 
-    fun partition1(array: ArrayList<Image>, start: Int, end: Int): Int {
+    fun partitionbyDate(array: ArrayList<Image>, start: Int, end: Int): Int {
         var left = start
         var right = end
         val pivot = array[(left + right) / 2]
 
         while (left <= right) {
-            while (array[left].date < pivot.date) {
+            while (convertDate(array[left].date) < convertDate(pivot.date)) {
                 left++
             }
 
-            while (array[right].date > pivot.date) {
+            while (convertDate(array[right].date) > convertDate(pivot.date)) {
                 right--
             }
 
@@ -271,7 +335,21 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
         return left
     }
 
-    fun partition2(array: ArrayList<Image>, start: Int, end: Int): Int {
+    fun convertDate(str: String): String{
+        var token = str.split(' ')
+
+        val year = token[5]
+        val month = monthArr[token[1]].toString()
+        val day = token[2]
+        var time = token[3].split(':')
+        var hour = time[0]
+        var minute = time[1]
+        var second = time[2]
+
+        return year+month+day+hour+minute+second
+    }
+
+    fun partitionbyColour(array: ArrayList<Image>, start: Int, end: Int): Int {
         var left = start
         var right = end
         val pivot = array[(left + right) / 2]
@@ -296,7 +374,7 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
         return left
     }
 
-    fun partition3(array: ArrayList<Image>, start: Int, end: Int): Int {
+    fun partitionbyStyle(array: ArrayList<Image>, start: Int, end: Int): Int {
         var left = start
         var right = end
         val pivot = array[(left + right) / 2]
