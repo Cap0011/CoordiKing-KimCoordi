@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/PARK/Documents/mju/2021_mju 3-2/Team/Project/CoordiKing-KimCoordi/app/src/main/res/drawable/main_button.xml" value="0.290625" />
+        <entry key="..\:/Users/PARK/Documents/mju/2021_mju 3-2/Team/Project/CoordiKing-KimCoordi/app/src/main/res/layout/activity_my_wardrobe.xml" value="0.1334853090172239" />
+        <entry key="..\:/Users/PARK/Documents/mju/2021_mju 3-2/Team/Project/CoordiKing-KimCoordi/app/src/main/res/layout/activity_simulator.xml" value="0.1334853090172239" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
 </project>

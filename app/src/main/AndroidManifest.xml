@@ -18,6 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FashionKingKimCoordi">
+
         <activity android:name=".activity.ImageAddActivity"
             android:theme="@style/Theme.FashionKingKimCoordi" />
         <activity
