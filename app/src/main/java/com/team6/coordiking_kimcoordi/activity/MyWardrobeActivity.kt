@@ -38,6 +38,7 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
     lateinit var user: FirebaseUser
     var myWardrobe: MutableList<Clothes> = arrayListOf()
     var myWardrobeTagList: MutableList<WardrobeTag> = arrayListOf()
+    var myWardrobeTagListBackUp: MutableList<WardrobeTag> = arrayListOf()
 
     var colourArr = arrayOf(
         "red", "orange", "yellow", "green", "blue", "navy", "purple",
@@ -119,7 +120,6 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
             saveClothes(user.uid, "test", dataType, dataColor, dataName)
             imageList.add(Image(dataName, dataColor, dataType, date))
             galleryAdapter.notifyDataSetChanged()
-            Log.d("Responsibility", "onActivityResult")
         }
     }
 
@@ -199,7 +199,6 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
     }
 
     private fun loadMyWardrobe(){
-        Log.d("Responsibility", "loadmyWardrobe")
         imageList.clear()
         val uid = user.uid
         database.child(uid).child("wardrobe").child("num").get().addOnSuccessListener {
@@ -290,6 +289,10 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
                 val temp = array[left]
                 array[left] = array[right]
                 array[right] = temp
+                //swap taglist
+                val t = myWardrobeTagList[left]
+                myWardrobeTagList[left] = myWardrobeTagList[right]
+                myWardrobeTagList[right] = t
                 left++
                 right--
             }
@@ -315,6 +318,10 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
                 val temp = array[left]
                 array[left] = array[right]
                 array[right] = temp
+                //swap taglist
+                val t = myWardrobeTagList[left]
+                myWardrobeTagList[left] = myWardrobeTagList[right]
+                myWardrobeTagList[right] = t
                 left++
                 right--
             }
@@ -353,6 +360,10 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
                 val temp = array[left]
                 array[left] = array[right]
                 array[right] = temp
+                //swap taglist
+                val t = myWardrobeTagList[left]
+                myWardrobeTagList[left] = myWardrobeTagList[right]
+                myWardrobeTagList[right] = t
                 left++
                 right--
             }
@@ -377,6 +388,10 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
                 val temp = array[left]
                 array[left] = array[right]
                 array[right] = temp
+                //swap taglist
+                val t = myWardrobeTagList[left]
+                myWardrobeTagList[left] = myWardrobeTagList[right]
+                myWardrobeTagList[right] = t
                 left++
                 right--
             }
@@ -391,19 +406,23 @@ class MyWardrobeActivity : AppCompatActivity(), GalleryImageClickListener {
         val code = tagList[tag] ?: return
         if(imageListBackUp.size == 0){
             imageListBackUp.addAll(imageList)
+            myWardrobeTagListBackUp.addAll(myWardrobeTagList)
         }
         else{
             imageList.clear()
             imageList.addAll(imageListBackUp)
+            myWardrobeTagList.clear()
+            myWardrobeTagList.addAll(myWardrobeTagListBackUp)
         }
         var cnt = 0
-        for(n in 0 until myWardrobe.size){
-            if(!myWardrobeTagList[n].tag[code!!]){
+        val total = myWardrobeTagList.size
+        for(n in 0 until total){
+            if(!myWardrobeTagList[n-cnt].tag[code!!]){
                 imageList.removeAt(n - cnt)
+                myWardrobeTagList.removeAt(n-cnt)
                 cnt++
             }
         }
         galleryAdapter.notifyDataSetChanged()
-        Log.d("Responsibility", "searchTag")
     }
 }

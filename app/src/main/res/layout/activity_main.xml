@@ -88,7 +88,7 @@
             android:textStyle="bold"
             android:text="My Outfit" />
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/main_btn_camera"
+            android:id="@+id/main_btn_random"
             android:layout_margin="@dimen/main_btn_margin_size"
             android:layout_width="@dimen/main_btn_size"
             android:layout_height="@dimen/main_btn_size"
@@ -96,7 +96,7 @@
             android:textColor="@color/panton_grey"
             android:textSize="@dimen/main_btn_text_size"
             android:textStyle="bold"
-            android:text="Snap" />
+            android:text="Today's offer" />
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/main_btn_mypage"
             android:layout_margin="@dimen/main_btn_margin_size"
@@ -143,7 +143,7 @@
             android:textColor="@color/panton_grey"
             android:textSize="@dimen/main_btn_text_size"
             android:textStyle="bold"
-            android:text="Setting" />
+            android:text="Community" />
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/main_btn_exit"
             android:layout_margin="@dimen/main_btn_margin_size"
@@ -154,6 +154,22 @@
             android:textSize="@dimen/main_btn_text_size"
             android:textStyle="bold"
             android:text="Exit" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/main_btn_camera"
+            android:layout_margin="@dimen/main_btn_margin_size"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/main_button"
+            android:textColor="@color/panton_grey"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:text="Snap" />
     </LinearLayout>
 
 </LinearLayout>
