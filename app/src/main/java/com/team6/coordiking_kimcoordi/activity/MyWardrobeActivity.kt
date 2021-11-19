@@ -1,3 +1,4 @@
+
 package com.team6.coordiking_kimcoordi.activity
 import android.app.Activity
 import android.content.Intent
