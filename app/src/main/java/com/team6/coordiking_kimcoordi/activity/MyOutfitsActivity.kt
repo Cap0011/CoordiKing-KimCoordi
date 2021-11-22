@@ -47,7 +47,7 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
             "red", "orange", "yellow", "green", "blue", "navy", "purple",
             "black", "white", "grey"
     )
-    var typeArr = arrayOf("jacket", "top", "bottom")
+    var styleArr = arrayOf("Vintage", "Tomboy", "Sporty", "Casual", "Chave", "Retro", "Grunge", "favourite");
     private val monthArr = hashMapOf(
             "Jan" to 1,
             "Feb" to 2,
@@ -73,9 +73,14 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
             "black" to 7,
             "white" to 8,
             "grey" to 9,
-            "jacket" to 10,
-            "top" to 11,
-            "bottom" to 12
+            "Vintage" to 10,
+            "Tomboy" to 11,
+            "Sporty" to 12,
+            "Casual" to 13,
+            "Chave" to 14,
+            "Retro" to 15,
+            "Grunge" to 16,
+            "favourite" to 17,
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,8 +103,9 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
         binding.addButton.setOnClickListener{
             // 플로팅 버튼
             // 갤러리에서 추가
-            startActivityForResult(Intent(this,ImageAddActivity::class.java),10)
+            startActivityForResult(Intent(this,OutfitImageAddActivity::class.java),10)
         }
+
 
         //added by 박재한
         var intent = intent
@@ -117,9 +123,10 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
             val date = currentTime.toString()
             val dataName : String = data?.getStringExtra("dataName")!!
             val dataColor : Int = data?.getIntExtra("dataColor",0)!!
-            val dataStyle : Int = data?.getIntExtra("dataType",0)!!
-            saveOutfit(user.uid, "test", dataStyle, dataName)
-            imageList.add(Image(dataName,dataColor,dataStyle,date))
+            val dataStyle : Int = data?.getIntExtra("dataStyle",0)!!
+            val fav: Boolean = data?.getBooleanExtra("favourite", false)
+            saveOutfit(user.uid, dataName, dataStyle, dataColor, fav)
+            imageList.add(Image(dataName, dataColor, dataStyle, date))
             galleryAdapter.notifyDataSetChanged()
         }
     }
@@ -136,15 +143,13 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
         tb_outfit.setNavigationOnClickListener{ onBackPressed()}
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.options_menu, menu)
-        val searchView = menu.findItem(R.id.search).actionView as SearchView
+        menuInflater.inflate(R.menu.options_menu_outfit, menu)
+        val searchView = menu.findItem(R.id.search_outfit).actionView as SearchView
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
             override fun onQueryTextChange(newText: String?): Boolean {
-                Log.d("da","text change")
                 return true
             }
             override fun onQueryTextSubmit(query: String?): Boolean {
-                Log.d("da","text submit")
                 searchTag(query)
                 return false
             }
@@ -182,24 +187,27 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
-            R.id.sort_name -> {
+            R.id.sort_name_outfit -> {
                 qsort(imageList, 0)
                 galleryAdapter.notifyDataSetChanged()
             }
-            R.id.sort_date -> {
+            R.id.sort_date_outfit -> {
                 qsort(imageList, 1)
                 galleryAdapter.notifyDataSetChanged()
             }
-            R.id.sort_color -> {
+            R.id.sort_color_outfit -> {
                 qsort(imageList, 2)
                 galleryAdapter.notifyDataSetChanged()
             }
-            R.id.sort_type -> {
+            R.id.sort_style_outfit -> {
                 qsort(imageList, 3)
                 galleryAdapter.notifyDataSetChanged()
             }
+            R.id.sort_favourite -> {
+                searchTag("favourite")
+                galleryAdapter.notifyDataSetChanged()
+            }
         }
-
         return super.onOptionsItemSelected(item)
     }
 
@@ -214,16 +222,17 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
         galleryFragment.show(fragmentTransaction, "gallery")
     }
 
-    private fun saveOutfit(uid: String, url: String, style: Int, memo: String) {
+    private fun saveOutfit(uid: String, name:String, style: Int, colour: Int, fav: Boolean) {
         // 임시
         val currentTime = Calendar.getInstance().time
         val date = currentTime.toString()
         //
-        database.child(uid).child("outfit").child(myOutfit.size.toString()).child("url").setValue(url)
+        database.child(uid).child("outfit").child(myOutfit.size.toString()).child("name").setValue(name)
         database.child(uid).child("outfit").child(myOutfit.size.toString()).child("style").setValue(style)
-        database.child(uid).child("outfit").child(myOutfit.size.toString()).child("name").setValue(memo)
+        database.child(uid).child("outfit").child(myOutfit.size.toString()).child("colour").setValue(colour)
+        database.child(uid).child("outfit").child(myOutfit.size.toString()).child("fav").setValue(fav)
         database.child(uid).child("outfit").child(myOutfit.size.toString()).child("date").setValue(date)
-        myOutfit.add(Outfit(url, style, memo, date))
+        myOutfit.add(Outfit(name, style, colour, fav, date))
         database.child(uid).child("outfit").child("num").setValue(myOutfit.size.toString())
     }
 
@@ -238,31 +247,36 @@ class MyOutfitsActivity : AppCompatActivity(), GalleryImageClickListener {
                 for(n in 0 until clothesNum){
                     CoroutineScope(Dispatchers.Main).async {
                         //데이터베이스 불러오기 동기처리
-                        var url: String = ""
-                        var style: Int = 0
                         var name: String = ""
+                        var style: Int = 0
+                        var colour: Int = 0
+                        var fav: Boolean = false
                         var date: String = ""
                         runBlocking {
-                            database.child(uid).child("outfit").child(n.toString()).child("url").get().addOnSuccessListener{
-                                url = it.value as String
+                            database.child(uid).child("outfit").child(n.toString()).child("name").get().addOnSuccessListener {
+                                name = it.value as String
                             }
                             database.child(uid).child("outfit").child(n.toString()).child("style").get().addOnSuccessListener {
                                 style = (it.value as Long).toInt()
                             }
-                            database.child(uid).child("outfit").child(n.toString()).child("name").get().addOnSuccessListener {
-                                name = it.value as String
+                            database.child(uid).child("outfit").child(n.toString()).child("colour").get().addOnSuccessListener{
+                                colour = (it.value as Long).toInt()
+                            }
+                            database.child(uid).child("outfit").child(n.toString()).child("fav").get().addOnSuccessListener {
+                                fav = it.value as Boolean
                             }
                             database.child(uid).child("outfit").child(n.toString()).child("date").get().addOnSuccessListener {
                                 date = it.value as String
                             }
                         }.await()
-                        myOutfit.add(Outfit(url, style, name, date))
-                        imageList.add(Image(name,0, style,""))
+                        myOutfit.add(Outfit(name, style, colour, fav, date))
+                        imageList.add(Image(name, colour, style, date))
                         galleryAdapter.notifyDataSetChanged()
                         //set TagList
                         myOutfitTagList.add(n, OutfitTag())
-                        myOutfitTagList[n].setIdxTrue(tagList[typeArr[style]]!!)
-                        myOutfitTagList[n].setIdxTrue(tagList[colourArr[0]]!!)
+                        myOutfitTagList[n].setIdxTrue(tagList[styleArr[style]]!!)
+                        myOutfitTagList[n].setIdxTrue(tagList[colourArr[colour]]!!)
+                        if(fav) myOutfitTagList[n].setIdxTrue(17)
                     }
                 }
             }

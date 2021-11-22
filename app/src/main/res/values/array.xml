@@ -17,4 +17,13 @@
         <item>Top</item>
         <item>Bottoms</item>
     </string-array>
+    <string-array name="style_picker_array">
+        <item>Vintage</item>
+        <item>Tomboy</item>
+        <item>Sporty</item>
+        <item>Casual</item>
+        <item>Chave</item>
+        <item>Retro</item>
+        <item>Grunge</item>
+    </string-array>
 </resources>
