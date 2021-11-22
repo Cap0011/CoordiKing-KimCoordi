@@ -76,11 +76,12 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, MyPageActivity::class.java))
         }
         main_btn_favourite.setOnClickListener {
-            startActivity(Intent(this, MyWardrobeActivity::class.java))
+            startActivity(Intent(this, FavouriteActivity::class.java))
         }
         main_btn_simulator.setOnClickListener {
             startActivity(Intent(this, SimulatorActivity::class.java))
         }
+
         main_btn_setting.setOnClickListener {
             startActivity(Intent(this, SettingActivity::class.java))
         }
@@ -88,7 +89,7 @@ class MainActivity : AppCompatActivity() {
         main_btn_random.setOnClickListener {
             showRandom()           
         }
-        
+
         main_btn_exit.setOnClickListener {
             val pref = getSharedPreferences("pref", MODE_PRIVATE)
             if(!pref.getBoolean("login",false)){

@@ -18,9 +18,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FashionKingKimCoordi">
+        <!--            android:name=".activity.TodayOfferActivity"-->
+        <!--            android:exported="true" />-->
         <activity
-            android:name=".activity.TodayOfferActivity"
-            android:exported="true" />
+            android:name=".activity.FavouriteActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+        <activity
+            android:name=".activity.OutfitImageAddActivity"
+            android:theme="@style/Theme.FashionKingKimCoordi" />
         <activity
             android:name=".activity.ImageAddActivity"
             android:theme="@style/Theme.FashionKingKimCoordi" />
