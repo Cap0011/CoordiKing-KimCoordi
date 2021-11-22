@@ -18,15 +18,39 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import com.team6.coordiking_kimcoordi.*
+import com.team6.coordiking_kimcoordi.adapter.Clothes
+import com.team6.coordiking_kimcoordi.adapter.GalleryImageAdapter
+import com.team6.coordiking_kimcoordi.adapter.Image
+import com.team6.coordiking_kimcoordi.adapter.WardrobeTag
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 import org.json.JSONObject
 import java.text.DecimalFormat
 
 
 class MainActivity : AppCompatActivity() {
+    // 추가-------------------------
+    private var imageList = ArrayList<Image>()
+    private var imageListBackUp = ArrayList<Image>()
+    lateinit var galleryAdapter: GalleryImageAdapter
+    val database = Firebase.database.reference
+    val storage = Firebase.storage
+    lateinit var user: FirebaseUser
+    var myWardrobe: MutableList<Clothes> = arrayListOf()
+    var myWardrobeTagList: MutableList<WardrobeTag> = arrayListOf()
+    var myWardrobeTagListBackUp: MutableList<WardrobeTag> = arrayListOf()
+    var typeArr = arrayOf("jacket", "top", "bottom")
+    // ------------------------------
 
     private val baseurl = "https://api.openweathermap.org/data/2.5/weather?"
     private val apiKey = "f38c2273c419563935be25a2ad018d7f"
@@ -60,6 +84,11 @@ class MainActivity : AppCompatActivity() {
         main_btn_setting.setOnClickListener {
             startActivity(Intent(this, SettingActivity::class.java))
         }
+        
+        main_btn_random.setOnClickListener {
+            showRandom()           
+        }
+        
         main_btn_exit.setOnClickListener {
             val pref = getSharedPreferences("pref", MODE_PRIVATE)
             if(!pref.getBoolean("login",false)){
@@ -79,6 +108,13 @@ class MainActivity : AppCompatActivity() {
             getWeatherHere()
         }
     }
+
+    private fun showRandom() {
+        // 랜덤 코디 제공
+        iv_main.setImageResource(R.drawable.guide0)
+
+    }
+
     private fun updateWeather(name: String){
         var url = ""
         var city = name
@@ -148,4 +184,5 @@ class MainActivity : AppCompatActivity() {
     private fun requestPermission(){
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 99)
     }
+
 }
