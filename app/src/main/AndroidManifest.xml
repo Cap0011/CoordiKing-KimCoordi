@@ -19,8 +19,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FashionKingKimCoordi">
         <activity
+            android:name=".activity.PostAddActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.CommunityActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
             android:name=".activity.FavouriteActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".activity.OutfitImageAddActivity"
             android:theme="@style/Theme.FashionKingKimCoordi" />

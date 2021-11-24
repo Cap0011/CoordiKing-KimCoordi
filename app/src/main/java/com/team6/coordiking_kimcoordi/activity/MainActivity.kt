@@ -57,6 +57,9 @@ class MainActivity : AppCompatActivity() {
         main_btn_simulator.setOnClickListener {
             startActivity(Intent(this, SimulatorActivity::class.java))
         }
+        main_btn_setting.setOnClickListener {
+            startActivity(Intent(this, CommunityActivity::class.java))
+        }
         main_btn_exit.setOnClickListener {
             val pref = getSharedPreferences("pref", MODE_PRIVATE)
             if(!pref.getBoolean("login",false)){
