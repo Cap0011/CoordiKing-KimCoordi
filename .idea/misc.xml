@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="app/src/main/res/layout/activity_image_add.xml" value="0.31666666666666665" />
+        <entry key="app/src/main/res/layout/activity_image_selector.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_my_wardrobe.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/layout/fragment_gallery_fullscreen.xml" value="0.375" />
+        <entry key="app/src/main/res/layout/fragment_my_wardrobe.xml" value="0.375" />
+        <entry key="app/src/main/res/menu/menu_add.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/menu/options_menu.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/menu/select_menu.xml" value="0.37447916666666664" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
 </project>
