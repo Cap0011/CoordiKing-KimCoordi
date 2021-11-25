@@ -1,47 +1,69 @@
 package com.team6.coordiking_kimcoordi.activity
 
+import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.team6.coordiking_kimcoordi.R
 import com.team6.coordiking_kimcoordi.adapter.CommunityPostAdapter
-import com.team6.coordiking_kimcoordi.adapter.GalleryImageAdapter
 import com.team6.coordiking_kimcoordi.adapter.GalleryImageClickListener
-import com.team6.coordiking_kimcoordi.adapter.Image
+import com.team6.coordiking_kimcoordi.adapter.Post
 import com.team6.coordiking_kimcoordi.databinding.ActivityCommunityBinding
-import com.team6.coordiking_kimcoordi.databinding.ActivitySnapBinding
-import com.team6.coordiking_kimcoordi.databinding.ItemCommunityBinding
 import kotlinx.android.synthetic.main.activity_community.*
-import kotlinx.android.synthetic.main.activity_setting.*
-import kotlinx.android.synthetic.main.activity_snap.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 
 class CommunityActivity : AppCompatActivity(), GalleryImageClickListener {
+
+    val database = Firebase.database.reference
+    lateinit var user: FirebaseUser
+    var postSize = 0
 
     private val SPAN_COUNT = 3
 
     lateinit var CommunityAdapter: CommunityPostAdapter
-    private var postList = ArrayList<Image>()
+    private var postList = ArrayList<Post>()
 
     lateinit var binding: ActivityCommunityBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_community)
         setUpActionBar()
 
+        user = Firebase.auth.currentUser!!
         binding = ActivityCommunityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.button.setOnClickListener {
-            startActivityForResult(Intent(this, PostAddActivity::class.java), 10)
-        }
+        loadMyPost()
 
-        binding.recyclerView.layoutManager = GridLayoutManager(this, SPAN_COUNT)
         CommunityAdapter = CommunityPostAdapter(postList)
         CommunityAdapter.listener = this
 
+        binding.recyclerView.layoutManager = GridLayoutManager(this, SPAN_COUNT)
+        binding.recyclerView.adapter = CommunityAdapter
 
+        binding.addButton.setOnClickListener{
+            startActivityForResult(Intent(this, PostAddActivity::class.java), 10)
+        }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode === 10 && resultCode === Activity.RESULT_OK){
+            loadMyPost()
+        }
+    }
+
+
 
     private fun setUpActionBar(){
         setSupportActionBar(tb_community)
@@ -56,6 +78,55 @@ class CommunityActivity : AppCompatActivity(), GalleryImageClickListener {
     }
 
     override fun onClick(adapterPosition: Int) {
-        TODO("Not yet implemented")
+        // Get selected image.
+        val image = postList.get(adapterPosition)
+        // Test
+        val intent = Intent(this, ArticleActivity::class.java)
+        intent.putExtra("dataName",image.dataName)
+        intent.putExtra("title",image.title)
+        intent.putExtra("text",image.text)
+        intent.putExtra("userName",image.userName)
+
+        startActivity(intent)
+    }
+
+    private fun loadMyPost(){
+        postList.clear()
+        val uid = user.uid
+        database.child("post").child("num").get().addOnSuccessListener{
+            it.value?.let {
+                if(it is Long) postSize = it.toInt()
+                else postSize = (it as String).toInt()
+                for(n in 0 until postSize){
+                    CoroutineScope(Dispatchers.Main).async {
+                        //데이터베이스 불러오기 비동기처리(병렬)
+                        var dataName: String = ""
+                        var title: String = ""
+                        var text: String = ""
+                        var date: String = ""
+                        var userName: String = ""
+                        runBlocking {
+                            database.child("post").child(n.toString()).child("data-name").get().addOnSuccessListener{
+                                if(it!=null) dataName = it.value as String
+                            }
+                            database.child("post").child(n.toString()).child("title").get().addOnSuccessListener{
+                                if(it!=null) title = it.value as String
+                            }
+                            database.child("post").child(n.toString()).child("text").get().addOnSuccessListener{
+                                if(it!=null) text = it.value as String
+                            }
+                            database.child("post").child(n.toString()).child("date").get().addOnSuccessListener{
+                                if(it!=null) date = it.value as String
+                            }
+                            database.child("post").child(n.toString()).child("user-name").get().addOnSuccessListener{
+                                if(it!=null) userName = it.value as String
+                            }
+                        }.await()
+                        postList.add(Post(dataName,title,text, userName, date))
+                        CommunityAdapter.notifyDataSetChanged()
+                    }
+                }
+            }
+        }
     }
 }

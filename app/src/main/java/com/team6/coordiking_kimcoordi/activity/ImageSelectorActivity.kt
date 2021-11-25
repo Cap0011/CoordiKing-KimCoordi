@@ -3,7 +3,6 @@ package com.team6.coordiking_kimcoordi.activity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.firebase.auth.FirebaseUser
@@ -60,8 +59,9 @@ class ImageSelectorActivity : AppCompatActivity(), GalleryImageClickListener {
         // Get selected image.
         val image = imageList.get(adapterPosition)
         // Test
-        Toast.makeText(this, "${image.title}", Toast.LENGTH_SHORT).show()
-        
+        intent.putExtra("dataName",image.title)
+        setResult(RESULT_OK, intent)
+        finish()
     }
 
     private fun loadMyOutfit(){

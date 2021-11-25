@@ -1,21 +1,17 @@
 package com.team6.coordiking_kimcoordi.adapter
 
 import android.content.Context
-import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
 import com.bumptech.glide.Glide
 import com.team6.coordiking_kimcoordi.R
-import com.team6.coordiking_kimcoordi.activity.SimulatorActivity
-import kotlinx.android.synthetic.main.activity_my_wardrobe.view.*
 import com.team6.coordiking_kimcoordi.activity.MyApplication
 import kotlinx.android.synthetic.main.item_gallery_image.view.*
 
-class CommunityPostAdapter(private val itemList: List<Image>): RecyclerView.Adapter<CommunityPostAdapter.ViewHolder>() {
+class CommunityPostAdapter(private val itemList: List<Post>): RecyclerView.Adapter<CommunityPostAdapter.ViewHolder>() {
     private var context: Context? = null
     var listener: GalleryImageClickListener? = null
 
@@ -45,7 +41,7 @@ class CommunityPostAdapter(private val itemList: List<Image>): RecyclerView.Adap
             //storage 이미지 다운로드
             val imgRef= MyApplication.storage
                 .reference
-                .child("${MyApplication.user!!.uid}/${image.title}.png").downloadUrl.addOnSuccessListener {  }.addOnSuccessListener {
+                .child("${MyApplication.user!!.uid}/${image.dataName}.png").downloadUrl.addOnSuccessListener {  }.addOnSuccessListener {
                     // load image
                     Glide.with(context!!).load(it).into(itemView.ivGalleryImage)
                 }.addOnCanceledListener {

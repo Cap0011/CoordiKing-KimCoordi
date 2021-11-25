@@ -19,11 +19,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FashionKingKimCoordi">
         <activity
-<<<<<<< HEAD
+            android:name=".activity.ArticleActivity"
+            android:exported="true" />
+        <activity
             android:name=".activity.ImageSelectorActivity"
             android:exported="true"
-            android:theme="@style/Theme.FashionKingKimCoordi"/>
-=======
+            android:theme="@style/Theme.FashionKingKimCoordi" />
+        <activity
             android:name=".activity.PostAddActivity"
             android:exported="false" />
         <activity
@@ -35,7 +37,6 @@
         <activity
             android:name=".activity.OutfitImageAddActivity"
             android:theme="@style/Theme.FashionKingKimCoordi" />
->>>>>>> PJH
         <activity
             android:name=".activity.ImageAddActivity"
             android:theme="@style/Theme.FashionKingKimCoordi" />
