@@ -42,27 +42,16 @@ class MyWardrobeFragment : Fragment(), GalleryImageClickListener {
 
     lateinit var fragmentListener: OnFragmentInteractionListener
 
-    override fun onAttach(context: Context){
-        super.onAttach(context)
-
-        if (context is OnFragmentInteractionListener){
-            fragmentListener = context
-        }else{
-            throw RuntimeException(context.toString())
-        }
-    }
-
 
     // User의 MyWardrobe에 저장된 사진들이 보임
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // super.onCreate(savedInstanceState)
-
+        // Log.d("MyWardrobeFragment", "onCreateView")
+        super.onCreate(savedInstanceState)
         val binding = FragmentMyWardrobeBinding.inflate(inflater, container, false)
         user = Firebase.auth.currentUser!!
 
         // load Outfit from DB
         loadMyWardrobe()
-
         galleryAdapter = GalleryImageAdapter(imageList)
         galleryAdapter.listener = this
         binding.recyclerView.layoutManager = GridLayoutManager(getContext(), SPAN_COUNT)
@@ -72,13 +61,23 @@ class MyWardrobeFragment : Fragment(), GalleryImageClickListener {
     }
 
 
+    override fun onAttach(context: Context){
+        // Log.d("MyWardrobeFragment", "onAttach")
+        super.onAttach(context)
+
+        if (context is OnFragmentInteractionListener){
+            fragmentListener = context
+        }else{
+            throw RuntimeException(context.toString())
+        }
+    }
+
     // 사진을 선택하면 해당 정보를 Activity로 전달
     override fun onClick(adapterPosition: Int) {
+        // Log.d("MyWardrobeFragment", "onClick")
         val bundle = Bundle()
         bundle.putSerializable("images", imageList)
         bundle.putInt("position", adapterPosition)
-        val image = imageList.get(adapterPosition)
-
         Toast.makeText(context, "사진을 선택했습니다.", Toast.LENGTH_SHORT).show()
 
         fragmentListener?.onFragmentInteraction(bundle)
@@ -91,7 +90,9 @@ class MyWardrobeFragment : Fragment(), GalleryImageClickListener {
     }
 
 
+
     private fun loadMyWardrobe() {
+        // Log.d("MyWardrobeFragment", "loadMyWardrobe")
         imageList.clear()
         val uid = user.uid
         database.child(uid).child("wardrobe").child("num").get().addOnSuccessListener {
@@ -132,6 +133,7 @@ class MyWardrobeFragment : Fragment(), GalleryImageClickListener {
                         }.await()
                         myWardrobe.add(Clothes(url, type, colour, name, date))
                         imageList.add(Image(name, colour, type, date))
+                        Log.d("LoadMy", imageList.get(n).title)
                         galleryAdapter.notifyDataSetChanged()
                     }
                 }
@@ -139,5 +141,6 @@ class MyWardrobeFragment : Fragment(), GalleryImageClickListener {
         }.addOnFailureListener {
             Log.e("firebase", "Error getting data", it)
         }
+        Log.d("LoadMy", "종료")
     }
 }
