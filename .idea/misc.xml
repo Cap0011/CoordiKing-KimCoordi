@@ -1,24 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-<<<<<<< HEAD
-<<<<<<< HEAD
-  <component name="DesignSurface">
-    <option name="filePathToZoomLevelMap">
-      <map>
-        <entry key="..\:/Users/PARK/Documents/mju/2021_mju 3-2/Team/Project/CoordiKing-KimCoordi/app/src/main/res/drawable/main_button.xml" value="0.290625" />
-        <entry key="..\:/Users/PARK/Documents/mju/2021_mju 3-2/Team/Project/CoordiKing-KimCoordi/app/src/main/res/layout/activity_my_wardrobe.xml" value="0.1334853090172239" />
-        <entry key="..\:/Users/PARK/Documents/mju/2021_mju 3-2/Team/Project/CoordiKing-KimCoordi/app/src/main/res/layout/activity_simulator.xml" value="0.1334853090172239" />
-<<<<<<< HEAD
-=======
-        <entry key="..\:/Users/PARK/Documents/mju/2021_mju 3-2/Team/Project/CoordiKing-KimCoordi/app/src/main/res/layout/fragment_gallery_fullscreen.xml" value="0.1334853090172239" />
->>>>>>> main
-      </map>
-    </option>
-=======
-  <component name="ProjectPlainTextFileTypeManager">
-    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main2.xml" />
->>>>>>> develop
-=======
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
@@ -26,6 +7,7 @@
         <entry key="app/src/main/res/layout/activity_community.xml" value="0.2823275862068966" />
         <entry key="app/src/main/res/layout/activity_image_add.xml" value="0.31666666666666665" />
         <entry key="app/src/main/res/layout/activity_image_selector.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.40729166666666666" />
         <entry key="app/src/main/res/layout/activity_my_wardrobe.xml" value="0.37447916666666664" />
         <entry key="app/src/main/res/layout/activity_post_add.xml" value="0.3958333333333333" />
         <entry key="app/src/main/res/layout/fragment_gallery_fullscreen.xml" value="0.375" />
@@ -39,7 +21,6 @@
         <entry key="app/src/main/res/menu/share_menu.xml" value="0.40729166666666666" />
       </map>
     </option>
->>>>>>> KJB
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK" />

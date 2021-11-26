@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity(){
         }
 
         main_btn_setting.setOnClickListener {
-            startActivity(Intent(this, SettingActivity::class.java))
+            startActivity(Intent(this, CommunityActivity::class.java))
         }
         
         main_btn_random.setOnClickListener {
