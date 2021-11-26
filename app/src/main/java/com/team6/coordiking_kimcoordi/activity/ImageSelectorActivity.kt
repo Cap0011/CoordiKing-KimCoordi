@@ -75,14 +75,11 @@ class ImageSelectorActivity : AppCompatActivity(), GalleryImageClickListener {
                 for(n in 0 until clothesNum){
                     CoroutineScope(Dispatchers.Main).async {
                         //데이터베이스 불러오기 동기처리
-                        var url: String = ""
+
                         var style: Int = 0
                         var name: String = ""
                         var date: String = ""
                         runBlocking {
-                            database.child(uid).child("outfit").child(n.toString()).child("url").get().addOnSuccessListener{
-                                url = it.value as String
-                            }
                             database.child(uid).child("outfit").child(n.toString()).child("style").get().addOnSuccessListener {
                                 style = (it.value as Long).toInt()
                             }
@@ -93,7 +90,7 @@ class ImageSelectorActivity : AppCompatActivity(), GalleryImageClickListener {
                                 date = it.value as String
                             }
                         }.await()
-                        imageList.add(Image(name,0, style,""))
+                        imageList.add(Image(name,0, style,date))
                         galleryAdapter.notifyDataSetChanged()
                     }
                 }

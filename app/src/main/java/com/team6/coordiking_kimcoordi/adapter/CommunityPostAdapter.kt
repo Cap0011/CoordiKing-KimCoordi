@@ -41,7 +41,7 @@ class CommunityPostAdapter(private val itemList: List<Post>): RecyclerView.Adapt
             //storage 이미지 다운로드
             val imgRef= MyApplication.storage
                 .reference
-                .child("${MyApplication.user!!.uid}/${image.dataName}.png").downloadUrl.addOnSuccessListener {  }.addOnSuccessListener {
+                .child("${image.uid}/${image.dataName}.png").downloadUrl.addOnSuccessListener {  }.addOnSuccessListener {
                     // load image
                     Glide.with(context!!).load(it).into(itemView.ivGalleryImage)
                 }.addOnCanceledListener {

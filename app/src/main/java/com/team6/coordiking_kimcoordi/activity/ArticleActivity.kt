@@ -20,11 +20,12 @@ class ArticleActivity : AppCompatActivity() {
         val title : String = intent.getStringExtra("title")!!
         val text : String = intent.getStringExtra("text")!!
         val userName : String = intent.getStringExtra("userName")!!
+        val uid : String = intent.getStringExtra("uid")!!
 
         //storage 이미지 다운로드
         val imgRef= MyApplication.storage
             .reference
-            .child("${MyApplication.user!!.uid}/${dataName}.png").downloadUrl.addOnSuccessListener {  }.addOnSuccessListener {
+            .child("${uid}/${dataName}.png").downloadUrl.addOnSuccessListener {  }.addOnSuccessListener {
                 // load image
                 Glide.with(applicationContext).load(it).into(binding.postImage)
             }.addOnCanceledListener {

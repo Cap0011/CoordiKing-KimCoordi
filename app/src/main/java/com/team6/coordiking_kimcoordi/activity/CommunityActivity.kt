@@ -86,13 +86,13 @@ class CommunityActivity : AppCompatActivity(), GalleryImageClickListener {
         intent.putExtra("title",image.title)
         intent.putExtra("text",image.text)
         intent.putExtra("userName",image.userName)
+        intent.putExtra("uid",image.uid)
 
         startActivity(intent)
     }
 
     private fun loadMyPost(){
         postList.clear()
-        val uid = user.uid
         database.child("post").child("num").get().addOnSuccessListener{
             it.value?.let {
                 if(it is Long) postSize = it.toInt()
@@ -105,6 +105,7 @@ class CommunityActivity : AppCompatActivity(), GalleryImageClickListener {
                         var text: String = ""
                         var date: String = ""
                         var userName: String = ""
+                        var uid: String = ""
                         runBlocking {
                             database.child("post").child(n.toString()).child("data-name").get().addOnSuccessListener{
                                 if(it!=null) dataName = it.value as String
@@ -121,8 +122,11 @@ class CommunityActivity : AppCompatActivity(), GalleryImageClickListener {
                             database.child("post").child(n.toString()).child("user-name").get().addOnSuccessListener{
                                 if(it!=null) userName = it.value as String
                             }
+                            database.child("post").child(n.toString()).child("uid").get().addOnSuccessListener{
+                                if(it!=null) uid = it.value as String
+                            }
                         }.await()
-                        postList.add(Post(dataName,title,text, userName, date))
+                        postList.add(Post(dataName,title,text, userName, uid, date))
                         CommunityAdapter.notifyDataSetChanged()
                     }
                 }
