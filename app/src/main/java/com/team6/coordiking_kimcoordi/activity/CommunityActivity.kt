@@ -3,6 +3,10 @@ package com.team6.coordiking_kimcoordi.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.firebase.auth.FirebaseUser
@@ -42,6 +46,7 @@ class CommunityActivity : AppCompatActivity(), GalleryImageClickListener {
         user = Firebase.auth.currentUser!!
         binding = ActivityCommunityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setUpActionBar()
 
         loadMyPost()
 
@@ -132,5 +137,39 @@ class CommunityActivity : AppCompatActivity(), GalleryImageClickListener {
                 }
             }
         }
+    }
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.options_menu, menu)
+        val searchView = menu.findItem(R.id.search).actionView as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            override fun onQueryTextChange(newText: String?): Boolean {
+                Log.d("da","text change")
+                return true
+            }
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                Log.d("da","text submit")
+                searchArticle(query)
+                return false
+            }
+        })
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId){
+            R.id.sort_name -> {
+            }
+            R.id.sort_date -> {
+            }
+            R.id.sort_color -> {
+            }
+            R.id.sort_type -> {
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    fun searchArticle(article: String?) {
+
     }
 }

@@ -32,7 +32,15 @@
             android:exported="false" />
         <activity
             android:name=".activity.CommunityActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".activity.FavouriteActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
