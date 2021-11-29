@@ -6,5 +6,7 @@ data class Post(
     val text: String,
     val userName: String,
     val uid: String,
-    val date: String
+    val date: String,
+    val style: Int,
+    val colour: Int
 )

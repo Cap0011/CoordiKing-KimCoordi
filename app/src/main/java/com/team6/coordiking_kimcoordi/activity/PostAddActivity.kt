@@ -23,6 +23,8 @@ class PostAddActivity : AppCompatActivity() {
     lateinit var user: FirebaseUser
     var postSize = 0
     lateinit var dataName:String
+    var style: Int = 0
+    var colour: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +41,6 @@ class PostAddActivity : AppCompatActivity() {
             }
         }
 
-
         startActivityForResult(Intent(this, ImageSelectorActivity::class.java), 10)
     }
 
@@ -52,8 +53,8 @@ class PostAddActivity : AppCompatActivity() {
         if(item.itemId === R.id.menu_add_share){
             if(binding.addImageView.drawable !== null && binding.postTitle.text.isNotEmpty() && binding.postText.text.isNotEmpty()){
                 // 계시물 저장
-                savePost(user.uid, binding.postTitle.text.toString(), binding.postText.text.toString(),dataName)
-                Toast.makeText(this, "계시물이 공유되었습니다", Toast.LENGTH_SHORT).show()
+                savePost(user.uid, binding.postTitle.text.toString(), binding.postText.text.toString(),dataName, style, colour)
+                Toast.makeText(this, "게시물이 공유되었습니다", Toast.LENGTH_SHORT).show()
                 setResult(RESULT_OK, intent)
                 finish()
             }else {
@@ -69,6 +70,8 @@ class PostAddActivity : AppCompatActivity() {
 
         if(requestCode===10 && resultCode=== Activity.RESULT_OK) {
             dataName = data?.getStringExtra("dataName")!!
+            colour = data?.getIntExtra("dataColour", 0)
+            style = data?.getIntExtra("dataStyle", 0)
             //storage 이미지 다운로드
             val imgRef= MyApplication.storage
                 .reference
@@ -81,18 +84,21 @@ class PostAddActivity : AppCompatActivity() {
             }
     }
 
-    private fun savePost(uid: String, title: String, text: String, dataName: String) {
+    private fun savePost(uid: String, title: String, text: String, dataName: String, style: Int, colour: Int) {
         // 임시
         val currentTime = Calendar.getInstance().time
         val date = currentTime.toString()
         val userName = user.displayName
+        val num = postSize.toString()
         //
-        database.child("post").child(postSize.toString()).child("uid").setValue(uid)
-        database.child("post").child(postSize.toString()).child("title").setValue(title)
-        database.child("post").child(postSize.toString()).child("text").setValue(text)
-        database.child("post").child(postSize.toString()).child("data-name").setValue(dataName)
-        database.child("post").child(postSize.toString()).child("user-name").setValue(userName)
-        database.child("post").child(postSize.toString()).child("date").setValue(date)
+        database.child("post").child(num).child("uid").setValue(uid)
+        database.child("post").child(num).child("title").setValue(title)
+        database.child("post").child(num).child("text").setValue(text)
+        database.child("post").child(num).child("data-name").setValue(dataName)
+        database.child("post").child(num).child("user-name").setValue(userName)
+        database.child("post").child(num).child("date").setValue(date)
+        database.child("post").child(num).child("style").setValue(style)
+        database.child("post").child(num).child("colour").setValue(colour)
         postSize++
         database.child("post").child("num").setValue(postSize.toString())
     }
