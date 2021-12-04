@@ -26,16 +26,15 @@
     <style name="Theme.FashionKingKimCoordi.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="myTheme" parent="@android:style/Theme.Holo.Light">
-        <item name="android:actionBarStyle">@style/myTheme.ActionBar</item>
-        <item name="android:actionMenuTextColor">@color/panton_grey</item>
+        <item name="android:actionBarStyle">@style/myTheme.ActionBarStyle</item>
     </style>
 
-    <style name="myTheme.ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+    <style name="myTheme.ActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:background">@color/panton_grey</item>
-        <item name="android:titleTextStyle">@style/myTheme.ActionBar.Text</item>
+        <item name="android:titleTextStyle">@style/myTheme.ActionBar.TitleTextStyle</item>
     </style>
 
-    <style name="myTheme.ActionBar.Text" parent="@android:style/TextAppearance">
+    <style name="myTheme.ActionBar.TitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
         <item name="android:textColor">@color/panton_grey</item>
     </style>
 

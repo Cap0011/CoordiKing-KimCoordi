@@ -18,8 +18,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FashionKingKimCoordi">
-        <!--            android:name=".activity.TodayOfferActivity"-->
-        <!--            android:exported="true" />-->
+        <activity
+            android:name=".activity.PostEditActivity"
+            android:exported="false" />
+
         <activity
             android:name=".activity.ArticleActivity"
             android:exported="true" />

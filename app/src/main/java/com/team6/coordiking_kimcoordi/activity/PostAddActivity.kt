@@ -99,6 +99,7 @@ class PostAddActivity : AppCompatActivity() {
         database.child("post").child(num).child("date").setValue(date)
         database.child("post").child(num).child("style").setValue(style)
         database.child("post").child(num).child("colour").setValue(colour)
+        database.child("post").child(num).child("status").setValue(true)
         postSize++
         database.child("post").child("num").setValue(postSize.toString())
     }
