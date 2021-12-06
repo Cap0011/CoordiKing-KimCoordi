@@ -1,6 +1,7 @@
 package com.team6.coordiking_kimcoordi.adapter
 
 data class Post(
+    val postIdx: Int,
     val dataName: String,
     val title: String,
     val text: String,

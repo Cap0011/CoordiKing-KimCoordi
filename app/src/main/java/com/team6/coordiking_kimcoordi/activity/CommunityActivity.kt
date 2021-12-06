@@ -1,6 +1,7 @@
 package com.team6.coordiking_kimcoordi.activity
 
 import android.app.Activity
+import android.app.Activity.RESULT_CANCELED
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +11,7 @@ import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.gms.common.api.Status.RESULT_CANCELED
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
@@ -106,6 +108,9 @@ class CommunityActivity : AppCompatActivity(), GalleryImageClickListener {
         if(requestCode === 10 && resultCode === Activity.RESULT_OK){
             loadMyPost()
         }
+        if(requestCode === 20 && resultCode === Activity.RESULT_CANCELED){
+            loadMyPost()
+        }
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.options_menu_community, menu)
@@ -197,8 +202,8 @@ class CommunityActivity : AppCompatActivity(), GalleryImageClickListener {
         intent.putExtra("uid",image.uid)
         intent.putExtra("dataStyle", image.style)
         intent.putExtra("dataColour", image.colour)
-
-        startActivity(intent)
+        intent.putExtra("postIdx", image.postIdx)
+        startActivityForResult(intent, 20)
     }
 
     private fun loadMyPost(){
@@ -218,6 +223,8 @@ class CommunityActivity : AppCompatActivity(), GalleryImageClickListener {
                         var uid: String = ""
                         var style: Int = 0
                         var colour: Int = 0
+                        var postIdx: Int = n
+                        var status: Boolean = false
                         runBlocking {
                             database.child("post").child(n.toString()).child("data-name").get().addOnSuccessListener{
                                 if(it!=null) dataName = it.value as String
@@ -243,13 +250,18 @@ class CommunityActivity : AppCompatActivity(), GalleryImageClickListener {
                             database.child("post").child(n.toString()).child("colour").get().addOnSuccessListener{
                                 if(it!=null) colour = (it.value as Long).toInt()
                             }
+                            database.child("post").child(n.toString()).child("status").get().addOnSuccessListener{
+                                if(it!=null) status = it.value as Boolean
+                            }
                         }.await()
-                        postList.add(Post(dataName,title,text, userName, uid, date, style, colour))
-                        CommunityAdapter.notifyDataSetChanged()
-                        //Tag
-                        myCommunityTagList.add(n, OutfitTag())
-                        myCommunityTagList[n].setIdxTrue(tagList[styleArr[style]]!!)
-                        myCommunityTagList[n].setIdxTrue(tagList[colourArr[colour]]!!)
+                        if(status){
+                            postList.add(Post(postIdx,dataName,title,text, userName, uid, date, style, colour))
+                            CommunityAdapter.notifyDataSetChanged()
+                            //Tag
+                            myCommunityTagList.add(n, OutfitTag())
+                            myCommunityTagList[n].setIdxTrue(tagList[styleArr[style]]!!)
+                            myCommunityTagList[n].setIdxTrue(tagList[colourArr[colour]]!!)
+                        }
                     }
                 }
             }
