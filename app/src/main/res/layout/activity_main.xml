@@ -68,111 +68,170 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:orientation="horizontal"
-        android:layout_marginTop="10dp">
-        <androidx.appcompat.widget.AppCompatButton
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/main_btn_margin_size"
             android:id="@+id/main_btn_wardrobe"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="@dimen/main_btn_size"
+                android:layout_height="@dimen/main_btn_size"
+                android:src="@drawable/ic_baseline_checkroom_24" />
+            <TextView
+                android:layout_width="@dimen/main_btn_size"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                android:textColor="@color/panton_yellow"
+                android:textSize="13.9sp"
+                android:text="Wardrobe"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="@dimen/main_btn_margin_size"
-            android:layout_width="@dimen/main_btn_size"
-            android:layout_height="@dimen/main_btn_size"
-            android:background="@drawable/main_button"
-            android:textColor="@color/panton_grey"
-            android:textSize="@dimen/main_btn_text_size"
-            android:textStyle="bold"
-            android:text="My Wardrobe" />
-        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/main_btn_outfit"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="@dimen/main_btn_size"
+                android:layout_height="@dimen/main_btn_size"
+                android:src="@drawable/ic_baseline_boy_24" />
+            <TextView
+                android:layout_width="@dimen/main_btn_size"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                android:textColor="@color/panton_yellow"
+                android:text="Outfit"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="@dimen/main_btn_margin_size"
-            android:layout_width="@dimen/main_btn_size"
-            android:layout_height="@dimen/main_btn_size"
-            android:background="@drawable/main_button"
-            android:textColor="@color/panton_grey"
-            android:textSize="@dimen/main_btn_text_size"
-            android:textStyle="bold"
-            android:text="My Outfit" />
-        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/main_btn_random"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="@dimen/main_btn_size"
+                android:layout_height="@dimen/main_btn_size"
+                android:src="@drawable/ic_baseline_insights_24" />
+            <TextView
+                android:layout_width="@dimen/main_btn_size"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                android:textColor="@color/panton_yellow"
+                android:text="Random"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="@dimen/main_btn_margin_size"
-            android:layout_width="@dimen/main_btn_size"
-            android:layout_height="@dimen/main_btn_size"
-            android:background="@drawable/main_button"
-            android:textColor="@color/panton_grey"
-            android:textSize="@dimen/main_btn_text_size"
-            android:textStyle="bold"
-            android:text="Today's offer" />
-        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/main_btn_mypage"
-            android:layout_margin="@dimen/main_btn_margin_size"
-            android:layout_width="@dimen/main_btn_size"
-            android:layout_height="@dimen/main_btn_size"
-            android:background="@drawable/main_button"
-            android:textColor="@color/panton_grey"
-            android:textSize="@dimen/main_btn_text_size"
-            android:textStyle="bold"
-            android:text="My Page" />
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="@dimen/main_btn_size"
+                android:layout_height="@dimen/main_btn_size"
+                android:src="@drawable/ic_baseline_settings_24" />
+            <TextView
+                android:layout_width="@dimen/main_btn_size"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                android:textColor="@color/panton_yellow"
+                android:text="Setting"/>
+        </LinearLayout>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal">
-        <androidx.appcompat.widget.AppCompatButton
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/main_btn_margin_size"
             android:id="@+id/main_btn_favourite"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="@dimen/main_btn_size"
+                android:layout_height="@dimen/main_btn_size"
+                android:src="@drawable/ic_baseline_star_24" />
+            <TextView
+                android:layout_width="@dimen/main_btn_size"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                android:textColor="@color/panton_yellow"
+                android:text="Favourite"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="@dimen/main_btn_margin_size"
-            android:layout_width="@dimen/main_btn_size"
-            android:layout_height="@dimen/main_btn_size"
-            android:background="@drawable/main_button"
-            android:textColor="@color/panton_grey"
-            android:textSize="@dimen/main_btn_text_size"
-            android:textStyle="bold"
-            android:text="Favourite" />
-        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/main_btn_simulator"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="@dimen/main_btn_size"
+                android:layout_height="@dimen/main_btn_size"
+                android:src="@drawable/ic_baseline_checklist_rtl_24" />
+            <TextView
+                android:layout_width="@dimen/main_btn_size"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                android:textColor="@color/panton_yellow"
+                android:text="Simulate"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="@dimen/main_btn_margin_size"
-            android:layout_width="@dimen/main_btn_size"
-            android:layout_height="@dimen/main_btn_size"
-
-            android:background="@drawable/main_button"
-            android:textColor="@color/panton_grey"
-            android:textSize="@dimen/main_btn_text_size"
-            android:textStyle="bold"
-            android:text="Check beforehand" />
-        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/main_btn_setting"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="@dimen/main_btn_size"
+                android:layout_height="@dimen/main_btn_size"
+                android:src="@drawable/ic_baseline_people_24" />
+            <TextView
+                android:layout_width="@dimen/main_btn_size"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                android:textColor="@color/panton_yellow"
+                android:text="Social"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="@dimen/main_btn_margin_size"
-            android:layout_width="@dimen/main_btn_size"
-            android:layout_height="@dimen/main_btn_size"
-            android:background="@drawable/main_button"
-            android:textColor="@color/panton_grey"
-            android:textSize="@dimen/main_btn_text_size"
-            android:textStyle="bold"
-            android:text="Community" />
-        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/main_btn_exit"
-            android:layout_margin="@dimen/main_btn_margin_size"
-            android:layout_width="@dimen/main_btn_size"
-            android:layout_height="@dimen/main_btn_size"
-            android:background="@drawable/main_button"
-            android:textColor="@color/panton_grey"
-            android:textSize="@dimen/main_btn_text_size"
-            android:textStyle="bold"
-            android:text="Exit" />
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="@dimen/main_btn_size"
+                android:layout_height="@dimen/main_btn_size"
+                android:src="@drawable/ic_baseline_exit_to_app_24" />
+            <TextView
+                android:layout_width="@dimen/main_btn_size"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                android:textColor="@color/panton_yellow"
+                android:text="Exit"/>
+        </LinearLayout>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal">
-        <androidx.appcompat.widget.AppCompatButton
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_margin="40dp"
             android:id="@+id/main_btn_camera"
-            android:layout_margin="@dimen/main_btn_margin_size"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/main_button"
-            android:textColor="@color/panton_grey"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:text="Snap" />
+            android:src="@drawable/ic_baseline_camera_alt_24" />
     </LinearLayout>
 
 </LinearLayout>

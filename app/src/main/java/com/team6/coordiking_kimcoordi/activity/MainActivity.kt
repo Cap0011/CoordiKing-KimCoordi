@@ -1,11 +1,18 @@
 package com.team6.coordiking_kimcoordi.activity
 
 import android.Manifest
+import android.app.AlarmManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.android.volley.Request
@@ -17,11 +24,13 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.team6.coordiking_kimcoordi.*
 import com.team6.coordiking_kimcoordi.fragment.RandomOfferFragment
+import com.team6.coordiking_kimcoordi.helper.NotificationReceiver
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_simulator.*
 import kotlinx.android.synthetic.main.fragment_random_offer.*
 import org.json.JSONObject
 import java.text.DecimalFormat
+import java.util.*
 
 
 class MainActivity : AppCompatActivity(){
@@ -31,7 +40,7 @@ class MainActivity : AppCompatActivity(){
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
-
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -60,7 +69,7 @@ class MainActivity : AppCompatActivity(){
         main_btn_setting.setOnClickListener {
             startActivity(Intent(this, CommunityActivity::class.java))
         }
-        
+
         main_btn_random.setOnClickListener {
             // Log.d("mainActivity", "random_button")
             supportFragmentManager.beginTransaction()
@@ -70,16 +79,16 @@ class MainActivity : AppCompatActivity(){
 
         main_btn_exit.setOnClickListener {
             val pref = getSharedPreferences("pref", MODE_PRIVATE)
-            if(!pref.getBoolean("login",false)){
+            if (!pref.getBoolean("login", false)) {
                 Firebase.auth.signOut()
             }
             finish()
         }
         main_btn_search.setOnClickListener {
             val city = main_et_city.text.toString()
-            if(city != ""){
+            if (city != "") {
                 updateWeather(city)
-            } else{
+            } else {
                 Toast.makeText(baseContext, "Please enter the city name", Toast.LENGTH_SHORT).show()
             }
         }
@@ -87,7 +96,6 @@ class MainActivity : AppCompatActivity(){
             getWeatherHere()
         }
     }
-
 
     private fun updateWeather(name: String){
         var url = ""
@@ -140,23 +148,30 @@ class MainActivity : AppCompatActivity(){
         requestQueue.add(strRequest)
     }
     private fun getWeatherHere(){
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED) {
             requestPermission()
             return
         }
         fusedLocationClient.lastLocation
-                .addOnSuccessListener {
-                    // Got last known location. In some rare situations this can be null.
-                    if(it == null) return@addOnSuccessListener
+            .addOnSuccessListener {
+                // Got last known location. In some rare situations this can be null.
+                if(it == null) return@addOnSuccessListener
 
-                    Log.d("weather", it.toString())
-                    var lat = it.latitude
-                    var lon = it.longitude
-                    updateWeather(lat, lon)
-                }
+                Log.d("weather", it.toString())
+                var lat = it.latitude
+                var lon = it.longitude
+                updateWeather(lat, lon)
+            }
     }
     private fun requestPermission(){
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 99)
+        ActivityCompat.requestPermissions(
+            this, arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ), 99
+        )
     }
-
 }
